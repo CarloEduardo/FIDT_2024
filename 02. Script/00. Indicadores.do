@@ -1,15 +1,14 @@
 * Tema: Indicadores FIDT
-* Elaboracion: Carlos Torres
-* Link: 
+* Elaboracion: Carlos Torres: 
 ********************************************************************************
 
 clear all
 set more off
 
 * Work route
-********************************************************************************
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-global Path                    = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT"
+global Path                    = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024"
 global Input                   = "$Path\01. Input"
 global Salud                   = "$Input\01. Salud Básica"
 global Desnutrición        	   = "$Input\02. Desnutrición infantil yo anemia infantil"
@@ -23,12 +22,14 @@ global Recursos_Presupuestales = "$Input\10. Recursos Presupuestales"
 global Output                  = "$Path\03. Output"
 
 * Data Warehouse
-********************************************************************************
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-use "$Salud\Salud Básica.dta", clear
+use "$Salud\01 Salud Básica.dta", clear
+merge 1:1 ubigeo using "$Desnutrición\02 Desnutrición infantil yo anemia infantil", nogen
+merge 1:1 ubigeo using "$Educación\03 Servicios de educación básica", nogen
+merge 1:1 ubigeo using "$Saneamiento\05 Vivienda y saneamiento", nogen
+merge 1:1 ubigeo using "$Electrificación\06 Electrificación rural", nogen
+merge 1:1 ubigeo using "$Telecomunicación\08 Telecomunicación rural", nogen
+merge 1:1 ubigeo using "$Desarrollo_Productivo\09 Apoyo al desarrollo productivo.dta", nogen
 
-merge 1:1 ubigeo using "$Saneamiento\Vivienda y saneamiento.dta", keepusing(f_agua_rural f_desag_rural) nogen 
-merge 1:1 ubigeo using "$Electrificación\Electrificación rural.dta", keepusing(f_elec_rural p_población_rural) nogen 
-merge 1:1 ubigeo using "$Telecomunicación\Cobertura de Internet fijo y movil.dta", keepusing(cobertura_internet_fijo_RU cobertura_internet_fijodummy_RU cobertura_internet_movil_RU cobertura_internet_movildummy_RU) nogen 
-
-d 
+save "$Input\Data_Warehouse.dta", replace

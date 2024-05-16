@@ -1,25 +1,32 @@
 * Tema: RENIPRESS y Salud Básica
 * Elaboracion: Carlos Torres
-* Link RENIPRESS: http://app20.susalud.gob.pe:8080/registro-renipress-webapp/listadoEstablecimientosRegistrados.htm?action=mostrarBuscar#no-back-button
+* Link RENIPRESS: 
+* http://app20.susalud.gob.pe:8080/registro-renipress-webapp/listadoEstablecimientosRegistrados.htm?action=mostrarBuscar#no-back-button
 ********************************************************************************
 
 clear all
 set more off
 
 * Work route
-********************************************************************************
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 global Path   = "E:\01. DataBase\1. INEI\5 CVP 2017"
-global Output = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT\01. Input\01. Salud Básica"
+global Output = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\01. Salud Básica"
+
+********************************************************************************
+********************************************************************************
+* Cantidad de establecimientos de salud del Sector Público
+********************************************************************************
+********************************************************************************
 
 * Importing database
-********************************************************************************
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 import excel "$Output\USLRC20240514033045_xp.xls", sheet("Listado de Establecimientos") firstrow clear
 
 rename UBIGEO ubigeo 
 
 * Filtering data
-****************
+*'''''''''''''''
 
 fre Tipo
 keep if Tipo=="ESTABLECIMIENTO DE SALUD CON INTERNAMIENTO" | Tipo=="ESTABLECIMIENTO DE SALUD SIN INTERNAMIENTO"
@@ -79,15 +86,22 @@ gen RENIPRESS_SECTOR_PÚBLICO= RENIPRESS_ESSALUD + RENIPRESS_GOBIERNO_REGIONAL +
 
 save "$Output\RENIPRESS.dta", replace
 
-* Importing database
 ********************************************************************************
+********************************************************************************
+* Porcentaje de población con alguna dificultad permanente
+* Porcentaje de población que no tiene seguro de salud 
+********************************************************************************
+********************************************************************************
+
+* Importing database
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 use "$Path\cpv2017_pob.dta", clear
 
 gen ubigeo = ccdd + ccpp + ccdi
 
 * Filtering data
-****************
+*'''''''''''''''
 
 fre thogar // thogar -- p: total de hogares 
 br   if thogar=="99"
@@ -120,29 +134,21 @@ c5_p9_6         byte    %8.0g      c5_p9_6    p: población con discapacidad: re
 c5_p9_7         byte    %8.0g      c5_p9_7    p: población con discapacidad: ninguna
 */
 
-********************************************************************************
-********************************************************************************
-*                                                                              *
-*           Porcentaje de población con alguna dificultad permanente           *
-*              Porcentaje Población que no tiene seguro de salud               * 
-*                                                                              *
-********************************************************************************
-********************************************************************************		
+egen Sin_seguro       =rowtotal(c5_p8_1 c5_p8_2 c5_p8_3 c5_p8_4 c5_p8_5)
+egen Con_discapacidad =rowtotal(c5_p9_1 c5_p9_2 c5_p9_3 c5_p9_4 c5_p9_5 c5_p9_6)
 
-egen sin_seguro       =rowtotal(c5_p8_1 c5_p8_2 c5_p8_3 c5_p8_4 c5_p8_5)
-egen con_discapacidad =rowtotal(c5_p9_1 c5_p9_2 c5_p9_3 c5_p9_4 c5_p9_5 c5_p9_6)
+gen Sin_seguro_dummy = cond(Sin_seguro>0,1,0)
+gen Con_discapacidad_dummy = cond(Con_discapacidad>0,1,0)
 
-gen sin_seguro_dummy = cond(sin_seguro>0,1,0)
-gen con_discapacidad_dummy = cond(con_discapacidad>0,1,0)
+collapse (mean) Sin_seguro_dummy Con_discapacidad_dummy [iw=id_pob_imp_f], by(ubigeo)
 
-collapse (mean) sin_seguro_dummy con_discapacidad_dummy [iw=id_pob_imp_f], by(ubigeo)
-
-foreach var of varlist sin_seguro_dummy con_discapacidad_dummy {
+foreach var of varlist Sin_seguro_dummy Con_discapacidad_dummy {
 	replace `var' = 0 if `var' == .
 }
 
 save "$Output\Seguro_discapacidad.dta", replace
 
+********************************************************************************
 ********************************************************************************
 
 use "$Output\RENIPRESS.dta", replace
@@ -159,6 +165,7 @@ tab _merge, miss
 ------------------------+-----------------------------------
                   Total |      1,877      100.00
 */
-keep ubigeo RENIPRESS_SECTOR_PÚBLICO sin_seguro_dummy con_discapacidad_dummy
 
-save "$Output\Salud Básica.dta", replace
+keep ubigeo RENIPRESS_SECTOR_PÚBLICO Sin_seguro_dummy Con_discapacidad_dummy
+
+save "$Output\01 Salud Básica.dta", replace

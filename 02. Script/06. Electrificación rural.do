@@ -1,19 +1,27 @@
-* Tema: Vivienda y saneamiento
+* Tema: Electrificación rural
 * Elaboracion: Carlos Torres
-* Link: 
 ********************************************************************************
 
 clear all
 set more off
 
 * Work route
-********************************************************************************
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 global Path   = "E:\01. DataBase\1. INEI\5 CVP 2017"
-global Output = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT\01. Input\06. Electrificación rural"
+global Output = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\06. Electrificación rural"
+
+********************************************************************************
+********************************************************************************
+* Porcentaje de viviendas rurales sin electricidad
+* Porcentaje de población rural
+********************************************************************************
+********************************************************************************
 
 * Importing database
-********************************************************************************
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 use "$Path\cpv2017_viv.dta", clear
+
+gen ubigeo = ccdd + ccpp + ccdi
 
 * c2_p1 -- v: tipo de vivienda
 br if thogar==99
@@ -24,29 +32,6 @@ drop if thogar==99
 br if c2_p2!=1
 fre c2_p11 if c2_p2!=1
 drop if c2_p2!=1
-
-tab encarea area, miss
-/*
-   tipo de |
-   �rea de |  v: tipo �rea censal
-  encuesta |         1          2 |     Total
------------+----------------------+----------
-    urbano | 5,884,013          0 | 5,884,013 
-     rural |   271,156  1,543,731 | 1,814,887 
------------+----------------------+----------
-     Total | 6,155,169  1,543,731 | 7,698,900 
-*/
-
-gen ubigeo = ccdd + ccpp + ccdi
-
-********************************************************************************
-********************************************************************************
-*                                                                              *
-*               Porcentaje de viviendas rurales sin electricidad               *
-*                        Porcentaje de población rural                         *
-*                                                                              *
-********************************************************************************
-********************************************************************************		
 			
 fre c2_p11
 /*
@@ -59,9 +44,8 @@ Valid   1 si tiene alumbrado el�ctrico |    6750790      87.69      87.69     
         Total                          |    7698900     100.00     100.00           
 ------------------------------------------------------------------------------------
 */
-
-recode c2_p11 (1 = 1 "Acceso a electricidad") (2 = 0 "Falta de acceso a electricidad")  (.=.), gen(f_elec)
-lab var f_elec "Falta de acceso a electricidad"
+recode c2_p11 (2 = 1 "Falta de acceso a electricidad")  (1 = 0 "Acceso a electricidad")  (.=.), gen(Sin_electricidad)
+lab var Sin_electricidad "Falta de acceso a electricidad"
 
 codebook t_c4_p1
 /*
@@ -84,7 +68,7 @@ t_c4_p1                                  v: total de la poblaci�n en la vivien
 *svyset Conglomerado [pw=id_viv_imp_f], strata(Estrato)vce(linearized)singleunit(centered)
 *collapse (mean) f_agua f_desag [iw=id_viv_imp_f], by(ubigeo encarea)
 
-collapse (mean) f_elec (sum) t_c4_p1 [iw=id_viv_imp_f], by(ubigeo encarea)
+collapse (mean) Sin_electricidad (sum) Población=t_c4_p1 [iw=id_viv_imp_f], by(ubigeo encarea)
 
 fre encarea
 /*
@@ -98,15 +82,17 @@ Valid   1 urbano |        741      29.09      29.09      29.09
 --------------------------------------------------------------
 */
 
-reshape wide f_elec t_c4_p1, i(ubigeo) j(encarea)
+reshape wide Sin_electricidad Población, i(ubigeo) j(encarea)
 
-rename (f_elec1 t_c4_p11) (f_elec_urbano t_c4_p1_urbano) 
-rename (f_elec2 t_c4_p12) (f_elec_rural  t_c4_p1_rural) 
+rename (Sin_electricidad1 Población1) (Sin_electricidad_urbano Población_urbano) 
+rename (Sin_electricidad2 Población2) (Sin_electricidad_rural  Población_rural) 
 
-foreach var of varlist f_elec_urbano t_c4_p1_urbano f_elec_rural t_c4_p1_rural {
+foreach var of varlist Sin_electricidad_urbano Sin_electricidad_rural Población_urbano Población_rural {
 	replace `var' = 0 if `var' == .
 }
 
-gen p_población_rural = t_c4_p1_rural/(t_c4_p1_urbano+t_c4_p1_rural)
+gen P_Población_rural = Población_rural/(Población_urbano+Población_rural)
 
-save "$Output\Electrificación rural.dta", replace
+order ubigeo Sin_electricidad_urbano Sin_electricidad_rural Población_urbano Población_rural P_Población_rural
+
+save "$Output\06 Electrificación rural.dta", replace

@@ -1,19 +1,27 @@
 * Tema: Vivienda y saneamiento
 * Elaboracion: Carlos Torres
-* Link: 
 ********************************************************************************
 
 clear all
 set more off
 
 * Work route
-********************************************************************************
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 global Path   = "E:\01. DataBase\1. INEI\5 CVP 2017"
-global Output = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT\01. Input\05 Servicio de Saneamiento"
+global Output = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\05. Servicio de Saneamiento"
+
+********************************************************************************
+********************************************************************************
+* Porcentaje de viviendas sin agua seguro 
+* Porcentaje de viviendas sin desagüe de red pública
+********************************************************************************
+********************************************************************************		
 
 * Importing database
-********************************************************************************
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 use "$Path\cpv2017_viv.dta", clear
+
+gen ubigeo = ccdd + ccpp + ccdi
 
 * c2_p1 -- v: tipo de vivienda
 br if thogar==99
@@ -24,30 +32,7 @@ drop if thogar==99
 br if c2_p2!=1
 fre c2_p6 if c2_p2!=1
 drop if c2_p2!=1
-
-tab encarea area, miss
-/*
-   tipo de |
-   �rea de |  v: tipo �rea censal
-  encuesta |         1          2 |     Total
------------+----------------------+----------
-    urbano | 5,884,013          0 | 5,884,013 
-     rural |   271,156  1,543,731 | 1,814,887 
------------+----------------------+----------
-     Total | 6,155,169  1,543,731 | 7,698,900 
-*/
-
-gen ubigeo = ccdd + ccpp + ccdi
-
-********************************************************************************
-********************************************************************************
-*                                                                              *
-*                   Porcentaje de viviendas sin agua seguro                    *
-*              Porcentaje de viviendas sin desagüe de red pública              *
-*                                                                              *
-********************************************************************************
-********************************************************************************		
-			
+		
 fre c2_p6
 /*
 c2_p6 -- v: abastecimiento de agua en la vivienda
@@ -67,9 +52,8 @@ Valid   1  red p�blica dentro de la vivienda             |    5162821      67.
         Total                                            |    7698900     100.00     100.00           
 ------------------------------------------------------------------------------------------------------
 */
-
-recode c2_p6 (1/3= 1 "Accede a agua potable por red pública o pilón") (4/10= 0 "Falta de acceso a agua por red pública o pilón")  (.=.), gen(f_agua)
-lab var f_agua "Falta de acceso a agua potable por red pública o pilón"
+recode c2_p6 (4/10= 1 "Falta de acceso a agua por red pública o pilón") (1/3= 0 "Accede a agua potable por red pública o pilón")   (.=.), gen(Sin_agua)
+lab var Sin_agua "Falta de acceso a agua potable por red pública o pilón"
 					
 fre c2_p10			
 /*
@@ -89,14 +73,13 @@ Valid   1 red p�blica de desag�e dentro de la vivienda |    4513134      58.
         Total                                          |    7698900     100.00     100.00           
 ----------------------------------------------------------------------------------------------------
 */			
-			
-recode c2_p10 (1/2 = 1 "Acceso a red pública") (3/8= 0 "Falta de acceso a red pública") (.=.), gen(f_desag)
-lab var f_desag "Falta de acceso a red pública de desagüe" 
+recode c2_p10 (3/8= 1 "Falta de acceso a red pública")  (1/2 = 0 "Acceso a red pública") (.=.), gen(Sin_desagüe)
+lab var Sin_desagüe "Falta de acceso a red pública de desagüe" 
 
 *svyset Conglomerado [pw=id_viv_imp_f], strata(Estrato)vce(linearized)singleunit(centered)
 *collapse (mean) f_agua f_desag [iw=id_viv_imp_f], by(ubigeo encarea)
 
-collapse (mean) f_agua f_desag [iw=id_viv_imp_f], by(ubigeo encarea)
+collapse (mean) Sin_agua Sin_desagüe [iw=id_viv_imp_f], by(ubigeo encarea)
 
 fre encarea
 /*
@@ -110,13 +93,15 @@ Valid   1 urbano |        741      29.09      29.09      29.09
 --------------------------------------------------------------
 */
 
-reshape wide f_agua f_desag, i(ubigeo) j(encarea)
+reshape wide Sin_agua Sin_desagüe, i(ubigeo) j(encarea)
 
-rename (f_agua1 f_desag1) (f_agua_urbano f_desag_urbano) 
-rename (f_agua2 f_desag2) (f_agua_rural  f_desag_rural) 
+rename (Sin_agua1 Sin_desagüe1) (Sin_agua_urbano Sin_desagüe_urbano) 
+rename (Sin_agua2 Sin_desagüe2) (Sin_agua_rural  Sin_desagüe_rural) 
 
-foreach var of varlist f_agua_urbano f_desag_urbano f_agua_rural f_desag_rural {
+foreach var of varlist Sin_agua_urbano Sin_desagüe_urbano Sin_agua_rural Sin_desagüe_rural {
 	replace `var' = 0 if `var' == .
 }
 
-save "$Output\Vivienda y saneamiento.dta", replace
+order ubigeo Sin_agua_urbano Sin_agua_rural Sin_desagüe_urbano Sin_desagüe_rural
+
+save "$Output\05 Vivienda y saneamiento.dta", replace
