@@ -85,8 +85,7 @@ Missing .                                       |    1429609       5.00
 Total                                           |   2.86e+07     100.00                      
 ---------------------------------------------------------------------------------------------
 */
-recode c5_p13_niv (4 6 7 8 9 10 = 1) (1 2 3 5 = 0), gen(Nive_secundaria_más_17)
-
+recode c5_p13_niv (4 6 7 8 9 10 = 1) (1 2 3 5 = 0), gen(Nivel_secundaria_más_17)
 
 * Porcentaje personas de 15 a más años con nivel alcanzado mínimo de secundario
 
@@ -115,9 +114,9 @@ preserve
 	tab c5_p4_1 c5_p13_niv, miss // Agregar un rango de edad 
 	drop if c5_p13_niv==.
 	drop if c5_p4_1>=17
-	collapse (mean) Nive_secundaria_más_17 [iw=id_pob_imp_f], by(ubigeo)
+	collapse (mean) Nivel_secundaria_más_17 [iw=id_pob_imp_f], by(ubigeo)
 	
-	save "$Output\Secundaria alcanzada más 17.dta", replace
+	save "$Output\Nivel secundaria alcanzada más 17 años.dta", replace
 restore
 
 * Años promedios de escolaridad de 3 a 17 años
@@ -134,9 +133,9 @@ restore
 use "$Output\No saben leer ni escribir.dta", replace
 
 merge 1:1 ubigeo using "$Output\Asiste una IE en otro distrito.dta", nogen
-merge 1:1 ubigeo using "$Output\Secundaria alcanzada más 17.dta", nogen
+merge 1:1 ubigeo using "$Output\Nivel secundaria alcanzada más 17 años.dta", nogen
 
-save "$Output\03. Servicios de educación básica.dta", replace
+save "$Output\03 Servicios de educación básica.dta", replace
 
 
 

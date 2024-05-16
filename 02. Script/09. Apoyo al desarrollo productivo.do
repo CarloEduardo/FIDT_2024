@@ -24,11 +24,11 @@ global Output = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\09. Apo
 import excel "$Path\2024 11.05 BD informaci n SEIA.xlsx", sheet("01.Superficie Agricola") firstrow clear cellrange(B4:G1878)
 
 rename UBIGEO             ubigeo
-rename Áreaagrícola2018ha Área_agrícola_ha
-rename Áreaterritorialha  Área_territorial_ha
+rename Áreaagrícola2018ha Superficie_agrícola_ha
+rename Áreaterritorialha  Superficie_territorial_ha
 
-keep  ubigeo Área_agrícola_ha Área_territorial_ha
-order ubigeo Área_agrícola_ha Área_territorial_ha
+keep  ubigeo Superficie_agrícola_ha Superficie_territorial_ha
+order ubigeo Superficie_agrícola_ha Superficie_territorial_ha
 
 save "$Output\Superficie Agricola.dta", replace
 
@@ -62,13 +62,12 @@ save "$Output\Valor Bruto de la Producción.dta", replace
 import excel "$Path\2024 11.05 BD informaci n SEIA.xlsx", sheet("03.Número de productores") firstrow clear cellrange(B4:F1858)
 
 rename UBIGEO      ubigeo
-rename PRODUCTORES Productores 
+rename PRODUCTORES Número_productores
 
-keep  ubigeo Productores
-order ubigeo Productores
+keep  ubigeo Número_productores
+order ubigeo Número_productores
 
 save "$Output\Número de productores.dta", replace
-
 
 ********************************************************************************
 ********************************************************************************

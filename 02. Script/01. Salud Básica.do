@@ -82,7 +82,7 @@ foreach var of varlist RENIPRESS_ESSALUD RENIPRESS_GOBIERNO_REGIONAL RENIPRESS_I
 	replace `var' = 0 if `var' == .
 }
 
-gen RENIPRESS_SECTOR_PÚBLICO= RENIPRESS_ESSALUD + RENIPRESS_GOBIERNO_REGIONAL + RENIPRESS_MINSA + RENIPRESS_MUNI_DISTRITAL + RENIPRESS_MUNI_PROVINCIAL
+gen Establecimientos_salud_SP= RENIPRESS_ESSALUD + RENIPRESS_GOBIERNO_REGIONAL + RENIPRESS_MINSA + RENIPRESS_MUNI_DISTRITAL + RENIPRESS_MUNI_PROVINCIAL
 
 save "$Output\RENIPRESS.dta", replace
 
@@ -119,6 +119,8 @@ c5_p8_4         byte    %8.0g      c5_p8_4    p: población afiliada: a seguro p
 c5_p8_5         byte    %8.0g      c5_p8_5    p: población afiliada: a otro seguro
 c5_p8_6         byte    %8.0g      c5_p8_6    p: población afiliada: a ningún seguro
 */
+egen Población_sin_seguro       =rowtotal(c5_p8_1 c5_p8_2 c5_p8_3 c5_p8_4 c5_p8_5)
+gen Sin_seguro = cond(Población_sin_seguro>0,1,0)
 
 d c5_p9_*
 /*
@@ -133,27 +135,23 @@ c5_p9_5         byte    %8.0g      c5_p9_5    p: población con discapacidad: en
 c5_p9_6         byte    %8.0g      c5_p9_6    p: población con discapacidad: relacionarse con los demás
 c5_p9_7         byte    %8.0g      c5_p9_7    p: población con discapacidad: ninguna
 */
+egen Población_con_discapacidad =rowtotal(c5_p9_1 c5_p9_2 c5_p9_3 c5_p9_4 c5_p9_5 c5_p9_6)
+gen Con_discapacidad = cond(Población_con_discapacidad>0,1,0)
 
-egen Sin_seguro       =rowtotal(c5_p8_1 c5_p8_2 c5_p8_3 c5_p8_4 c5_p8_5)
-egen Con_discapacidad =rowtotal(c5_p9_1 c5_p9_2 c5_p9_3 c5_p9_4 c5_p9_5 c5_p9_6)
+collapse (mean) Sin_seguro Con_discapacidad [iw=id_pob_imp_f], by(ubigeo)
 
-gen Sin_seguro_dummy = cond(Sin_seguro>0,1,0)
-gen Con_discapacidad_dummy = cond(Con_discapacidad>0,1,0)
-
-collapse (mean) Sin_seguro_dummy Con_discapacidad_dummy [iw=id_pob_imp_f], by(ubigeo)
-
-foreach var of varlist Sin_seguro_dummy Con_discapacidad_dummy {
+foreach var of varlist Sin_seguro Con_discapacidad {
 	replace `var' = 0 if `var' == .
 }
 
-save "$Output\Seguro_discapacidad.dta", replace
+save "$Output\Sin seguro y con discapacidad.dta", replace
 
 ********************************************************************************
 ********************************************************************************
 
 use "$Output\RENIPRESS.dta", replace
 
-merge 1:1 ubigeo using "$Output\Seguro_discapacidad.dta"
+merge 1:1 ubigeo using "$Output\Sin seguro y con discapacidad.dta"
 
 tab _merge, miss
 /*
@@ -166,6 +164,6 @@ tab _merge, miss
                   Total |      1,877      100.00
 */
 
-keep ubigeo RENIPRESS_SECTOR_PÚBLICO Sin_seguro_dummy Con_discapacidad_dummy
+keep ubigeo Establecimientos_salud_SP Sin_seguro Con_discapacidad
 
 save "$Output\01 Salud Básica.dta", replace
