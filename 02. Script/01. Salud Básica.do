@@ -128,7 +128,7 @@ c5_p8_5         byte    %8.0g      c5_p8_5    p: población afiliada: a otro seg
 c5_p8_6         byte    %8.0g      c5_p8_6    p: población afiliada: a ningún seguro
 */
 egen Población_sin_seguro       =rowtotal(c5_p8_1 c5_p8_2 c5_p8_3 c5_p8_4 c5_p8_5)
-gen Sin_seguro = cond(Población_sin_seguro>0,1,0)
+gen  Sin_seguro = cond(Población_sin_seguro>0,1,0)
 
 d c5_p9_*
 /*
@@ -144,9 +144,9 @@ c5_p9_6         byte    %8.0g      c5_p9_6    p: población con discapacidad: re
 c5_p9_7         byte    %8.0g      c5_p9_7    p: población con discapacidad: ninguna
 */
 egen Población_con_discapacidad =rowtotal(c5_p9_1 c5_p9_2 c5_p9_3 c5_p9_4 c5_p9_5 c5_p9_6)
-gen Con_discapacidad = cond(Población_con_discapacidad>0,1,0)
+gen  Con_discapacidad = cond(Población_con_discapacidad>0,1,0)
 
-collapse (mean) Sin_seguro Con_discapacidad [iw=id_pob_imp_f], by(ubigeo)
+collapse (mean) Sin_seguro Con_discapacidad [iw=factor_pond], by(ubigeo)
 
 foreach var of varlist Sin_seguro Con_discapacidad {
 	replace `var' = 0 if `var' == .

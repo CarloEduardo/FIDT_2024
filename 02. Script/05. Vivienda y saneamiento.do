@@ -53,7 +53,7 @@ Valid   1  red p�blica dentro de la vivienda             |    5162821      67.
         Total                                            |    7698900     100.00     100.00           
 ------------------------------------------------------------------------------------------------------
 */
-recode c2_p6 (4/10= 1 "Falta de acceso a agua por red pública o pilón") (1/3= 0 "Accede a agua potable por red pública o pilón")   (.=.), gen(Sin_agua)
+recode c2_p6 (4/10= 1 "Falta de acceso a agua por red pública o pilón") (1/3= 0 "Accede a agua potable por red pública o pilón") (.=.), gen(Sin_agua)
 lab var Sin_agua "Falta de acceso a agua potable por red pública o pilón"
 					
 fre c2_p10			
@@ -80,6 +80,6 @@ lab var Sin_desagüe "Falta de acceso a red pública de desagüe"
 *svyset Conglomerado [pw=id_viv_imp_f], strata(Estrato)vce(linearized)singleunit(centered)
 *collapse (mean) f_agua f_desag [iw=id_viv_imp_f], by(ubigeo encarea)
 
-collapse (mean) Sin_agua Sin_desagüe [iw=id_viv_imp_f], by(ubigeo)
+collapse (mean) Sin_agua Sin_desagüe, by(ubigeo)
 
 save "$Output\05 Vivienda y saneamiento.dta", replace

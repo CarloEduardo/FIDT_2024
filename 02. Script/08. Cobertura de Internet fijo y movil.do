@@ -81,10 +81,7 @@ recode c3_p2_13 (2 = 1) (1 = 0), gen(Sin_conexión_internet)
 
 drop if c3_p2_10==. & c3_p2_11==. & c3_p2_13==.
 
-*svyset Conglomerado [pw=id_viv_imp_f], strata(Estrato)vce(linearized)singleunit(centered)
-*collapse (mean) f_agua f_desag [iw=id_viv_imp_f], by(ubigeo encarea)
-
-collapse (mean) Sin_teléfono_celular Sin_teléfono_fijo Sin_conexión_internet [iw=id_hog_imp_f], by(ubigeo encarea)
+collapse (mean) Sin_teléfono_celular Sin_teléfono_fijo Sin_conexión_internet, by(ubigeo encarea)
 
 * encarea 1 = urbano
 * encarea 2 = rural
@@ -237,5 +234,5 @@ order ubigeo ///
 		Cobertura_inter_fijo_urb        Cobertura_inter_fijo_rur ///  
 		Cobertura_inter_fijo_dummy_urb  Cobertura_inter_fijo_dummy_rur ///
 		Cobertura_inter_movil_urb       Cobertura_inter_movil_rur /// 
-		Cobertura_inter_movil_dummy_urb Cobertura_inter_movil_dummy_rur ///
+		Cobertura_inter_movil_dummy_urb Cobertura_inter_movil_dummy_rur
 save "$Output\08 Telecomunicación rural.dta", replace

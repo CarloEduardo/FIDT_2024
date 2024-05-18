@@ -66,10 +66,7 @@ t_c4_p1                                  v: total de la poblaci�n en la vivien
                                  1         2         3         5         6
 */
 
-*svyset Conglomerado [pw=id_viv_imp_f], strata(Estrato)vce(linearized)singleunit(centered)
-*collapse (mean) f_agua f_desag [iw=id_viv_imp_f], by(ubigeo encarea)
-
-collapse (mean) Sin_electricidad (sum) Población=t_c4_p1 [iw=id_viv_imp_f], by(ubigeo encarea)
+collapse (mean) Sin_electricidad (sum) Población=t_c4_p1, by(ubigeo encarea)
 
 fre encarea
 /*
