@@ -19,6 +19,7 @@ global Output = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\06. Ele
 
 * Importing database
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
 use "$Path\cpv2017_viv.dta", clear
 
 gen ubigeo = ccdd + ccpp + ccdi

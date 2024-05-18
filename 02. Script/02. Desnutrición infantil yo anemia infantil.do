@@ -25,6 +25,9 @@ global Output = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\02. Des
 * Porcentaje de desnutrición crónica en niños menores de 5 años
 ********************************************************************************
 ********************************************************************************
+/*
+Con esta variable podremos conocer el porcentaje de la población de niños menores de 5 años con desnutrición crónica, y que necesitan infraestructura en salud adecuada para un correcto tratamiento.
+*/
 
 * Importing database
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -52,6 +55,9 @@ save "$Output\Desnutrición.dta", replace
 * Porcentaje de anemia total en niños entre 6 y 35 meses
 ********************************************************************************
 ********************************************************************************
+/*
+Con esta variable podremos conocer el porcentaje de la población de niños entre 6 y 35 meses, y que necesitan infraestructura en salud adecuada para un correcto tratamiento.
+*/
 
 * Importing database
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''

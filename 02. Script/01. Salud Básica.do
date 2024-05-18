@@ -17,6 +17,9 @@ global Output = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\01. Sal
 * Cantidad de establecimientos de salud del Sector Público
 ********************************************************************************
 ********************************************************************************
+/*
+Esta variable hace referencia a conocer la cantidad de establecimientos de salud del sector público a nivel nacional que sean administrados por el MINSA, ESSALUD, Gobiernos Locales, Gobiernos Regionales de tipo establecimiento de salud con y sin internamiento que cuente con alguna categoría establecida por el MINSA, identificando así brechas de infraestructura. 
+*/
 
 * Importing database
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -92,6 +95,11 @@ save "$Output\RENIPRESS.dta", replace
 * Porcentaje de población que no tiene seguro de salud 
 ********************************************************************************
 ********************************************************************************
+/*
+Esta variable busca conocer el porcentaje de la población que cuenta con alguna dificultad permanente para ver, oír, hablar/comunicarse, moverse/caminar, entender/aprender o relacionarse con los demás por sus pensamientos, sentimientos, emociones o conductas y que necesitan infraestructura en salud adecuado para un correcto tratamiento.
+
+Con esta variable podremos conocer el porcentaje de personas que no cuenta con algún seguro de salud, lo cual puede deberse por la escasa oferta de infraestructura de salud.
+*/
 
 * Importing database
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -164,6 +172,7 @@ tab _merge, miss
                   Total |      1,877      100.00
 */
 
-keep ubigeo Establecimientos_salud_SP Sin_seguro Con_discapacidad
+keep  ubigeo Establecimientos_salud_SP Con_discapacidad Sin_seguro 
+order ubigeo Establecimientos_salud_SP Con_discapacidad Sin_seguro
 
 save "$Output\01 Salud Básica.dta", replace

@@ -230,4 +230,12 @@ use "$Output\Sin acceso a teléfono celular, fijo o internet.dta", replace
 merge 1:1 ubigeo using "$Output\Cobertura de internet fijo.dta", nogen
 merge 1:1 ubigeo using "$Output\Cobertura de internet movil.dta", nogen
 
-save "$Output\08. Telecomunicación rural.dta", replace
+order ubigeo /// 
+		Sin_teléfono_celular_urbano 	Sin_teléfono_celular_rural ///   
+		Sin_teléfono_fijo_urbano        Sin_teléfono_fijo_rural ///
+		Sin_conexión_internet_urbano    Sin_conexión_internet_rural ///        
+		Cobertura_inter_fijo_urb        Cobertura_inter_fijo_rur ///  
+		Cobertura_inter_fijo_dummy_urb  Cobertura_inter_fijo_dummy_rur ///
+		Cobertura_inter_movil_urb       Cobertura_inter_movil_rur /// 
+		Cobertura_inter_movil_dummy_urb Cobertura_inter_movil_dummy_rur ///
+save "$Output\08 Telecomunicación rural.dta", replace

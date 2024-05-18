@@ -19,6 +19,7 @@ global Output = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\05. Ser
 
 * Importing database
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
 use "$Path\cpv2017_viv.dta", clear
 
 gen ubigeo = ccdd + ccpp + ccdi
@@ -79,29 +80,6 @@ lab var Sin_desagüe "Falta de acceso a red pública de desagüe"
 *svyset Conglomerado [pw=id_viv_imp_f], strata(Estrato)vce(linearized)singleunit(centered)
 *collapse (mean) f_agua f_desag [iw=id_viv_imp_f], by(ubigeo encarea)
 
-collapse (mean) Sin_agua Sin_desagüe [iw=id_viv_imp_f], by(ubigeo encarea)
-
-fre encarea
-/*
-encarea -- tipo de �rea de encuesta
---------------------------------------------------------------
-                 |      Freq.    Percent      Valid       Cum.
------------------+--------------------------------------------
-Valid   1 urbano |        741      29.09      29.09      29.09
-        2 rural  |       1806      70.91      70.91     100.00
-        Total    |       2547     100.00     100.00           
---------------------------------------------------------------
-*/
-
-reshape wide Sin_agua Sin_desagüe, i(ubigeo) j(encarea)
-
-rename (Sin_agua1 Sin_desagüe1) (Sin_agua_urbano Sin_desagüe_urbano) 
-rename (Sin_agua2 Sin_desagüe2) (Sin_agua_rural  Sin_desagüe_rural) 
-
-foreach var of varlist Sin_agua_urbano Sin_desagüe_urbano Sin_agua_rural Sin_desagüe_rural {
-	replace `var' = 0 if `var' == .
-}
-
-order ubigeo Sin_agua_urbano Sin_agua_rural Sin_desagüe_urbano Sin_desagüe_rural
+collapse (mean) Sin_agua Sin_desagüe [iw=id_viv_imp_f], by(ubigeo)
 
 save "$Output\05 Vivienda y saneamiento.dta", replace
