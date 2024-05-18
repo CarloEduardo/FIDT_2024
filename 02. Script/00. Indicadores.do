@@ -32,6 +32,7 @@ merge 1:1 ubigeo using "$Saneamiento\05 Vivienda y saneamiento", nogen
 merge 1:1 ubigeo using "$Electrificación\06 Electrificación rural", keepusing(Sin_electricidad_rural P_Población_rural) nogen
 merge 1:1 ubigeo using "$Telecomunicación\08 Telecomunicación rural", keepusing(Sin_teléfono_celular_rural Sin_teléfono_fijo_rural Sin_conexión_internet_rural Cobertura_inter_fijo_dummy_rur Cobertura_inter_movil_dummy_rur) nogen
 merge 1:1 ubigeo using "$Desarrollo_Productivo\09 Apoyo al desarrollo productivo.dta", nogen
+merge 1:1 ubigeo using "$Recursos_Presupuestales\10 Recursos Presupuestales.dta", nogen
 merge 1:1 ubigeo using "$Saneamiento\05 Vivienda y saneamiento", keepusing(ubigeo) keep(3) nogen
 
 
@@ -85,6 +86,13 @@ rename Superficie_agrícola_ha          v43_Superficie_agrícola_ha
 rename Superficie_territorial_ha       v43_Superficie_territorial_ha 
 rename VBP_corriente_2023 		       v44_VBP_corriente_2023
 rename Número_productores 		       v45_Número_productores
+
+rename PIM_promedio                    v46_PIM_promedio
+rename PIM_promedio_FIDT               v47_PIM_promedio_FIDT
+rename PIM_promedio_donaciones         v48_PIM_promedio_donaciones
+rename Ejecución_total                 v49_Ejecución_total
+rename Ejecución_FIDT                  v50_Ejecución_FIDT
+rename Ejecución_promedio_donaciones   v51_Ejecución_donaciones
 
 save "$Input\Data_Warehouse.dta", replace
 save "$Path\Data_Warehouse.dta", replace
