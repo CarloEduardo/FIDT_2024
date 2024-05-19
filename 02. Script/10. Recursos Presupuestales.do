@@ -24,6 +24,8 @@ import excel "$Path\Solicitud_FIDT_GRGL.xlsx", sheet("PIM TOTAL") firstrow clear
 rename UBIGEO_SIAF   ubigeo
 rename PromediodePIM PIM_promedio_total
 
+drop if DISTRITO=="99. MULTIDISTRITAL"
+
 keep  ubigeo PIM_promedio_total
 order ubigeo PIM_promedio_total
 
@@ -42,6 +44,8 @@ import excel "$Path\Solicitud_FIDT_GRGL.xlsx", sheet("PIM FUNCION FIDT") firstro
 
 rename UBIGEO_SIAF   ubigeo
 rename PromediodePIM PIM_promedio_FIDT
+
+drop if DISTRITO=="99. MULTIDISTRITAL"
 
 keep  ubigeo PIM_promedio_FIDT
 order ubigeo PIM_promedio_FIDT
@@ -62,6 +66,8 @@ import excel "$Path\Solicitud_FIDT_GRGL.xlsx", sheet("PIM DONACIONES") firstrow 
 rename UBIGEO_SIAF   ubigeo
 rename PromediodePIM PIM_promedio_donaciones
 
+drop if DISTRITO=="99. MULTIDISTRITAL"
+
 keep  ubigeo PIM_promedio_donaciones
 order ubigeo PIM_promedio_donaciones
 
@@ -80,6 +86,19 @@ import excel "$Path\Solicitud_FIDT_GRGL.xlsx", sheet("EJECUCION total") firstrow
 
 rename UBIGEO_SIAF       ubigeo
 rename ejecucionpromedio Ejecución_total
+
+drop if DISTRITO=="99. MULTIDISTRITAL"
+
+codebook  Ejecución_total ejecucion2019 ejecucion2020 ejecucion2021 ejecucion2022 ejecucion2023
+mdesc     Ejecución_total ejecucion2019 ejecucion2020 ejecucion2021 ejecucion2022 ejecucion2023
+
+br ubigeo Ejecución_total ejecucion2019 ejecucion2020 ejecucion2021 ejecucion2022 ejecucion2023 if Ejecución_total==.
+
+egen Ejecución_total_imput = rowmean(ejecucion2019 ejecucion2020 ejecucion2021 ejecucion2022 ejecucion2023)
+
+compare Ejecución_total Ejecución_total_imput
+
+replace Ejecución_total=Ejecución_total_imput if Ejecución_total==.
 
 keep  ubigeo Ejecución_total
 order ubigeo Ejecución_total
@@ -101,6 +120,19 @@ import excel "$Path\Solicitud_FIDT_GRGL.xlsx", sheet("EJECUCION FUNCION FIDT") f
 rename UBIGEO_SIAF       ubigeo
 rename ejecucionpromedio Ejecución_FIDT
 
+drop if DISTRITO=="99. MULTIDISTRITAL"
+
+codebook  Ejecución_FIDT ejecucion2019 ejecucion2020 ejecucion2021 ejecucion2022 ejecucion2023
+mdesc     Ejecución_FIDT ejecucion2019 ejecucion2020 ejecucion2021 ejecucion2022 ejecucion2023
+
+br ubigeo Ejecución_FIDT ejecucion2019 ejecucion2020 ejecucion2021 ejecucion2022 ejecucion2023 if Ejecución_FIDT==.
+
+egen Ejecución_FIDT_imput = rowmean(ejecucion2019 ejecucion2020 ejecucion2021 ejecucion2022 ejecucion2023)
+
+compare Ejecución_FIDT Ejecución_FIDT_imput
+
+replace Ejecución_FIDT=Ejecución_FIDT_imput if Ejecución_FIDT==.
+
 keep  ubigeo Ejecución_FIDT
 order ubigeo Ejecución_FIDT
 
@@ -118,10 +150,23 @@ save "$Output\Porcentaje de ejecución FIDT.dta", replace
 import excel "$Path\Solicitud_FIDT_GRGL.xlsx", sheet("EJECUCION DONACIONES Y TRAN") firstrow clear cellrange(A2:T1469)
 
 rename UBIGEO_SIAF       ubigeo
-rename ejecucionpromedio Ejecución_promedio_donaciones
+rename ejecucionpromedio Ejecución_donaciones
 
-keep  ubigeo Ejecución_promedio_donaciones
-order ubigeo Ejecución_promedio_donaciones
+drop if DISTRITO=="99. MULTIDISTRITAL"
+
+codebook  Ejecución_donaciones ejecucion2019 ejecucion2020 ejecucion2021 ejecucion2022 ejecucion2023
+mdesc     Ejecución_donaciones ejecucion2019 ejecucion2020 ejecucion2021 ejecucion2022 ejecucion2023
+
+br ubigeo Ejecución_donaciones ejecucion2019 ejecucion2020 ejecucion2021 ejecucion2022 ejecucion2023 if Ejecución_donaciones==.
+
+egen Ejecución_donaciones_imput = rowmean(ejecucion2019 ejecucion2020 ejecucion2021 ejecucion2022 ejecucion2023)
+
+compare Ejecución_donaciones Ejecución_donaciones_imput
+
+replace Ejecución_donaciones=Ejecución_donaciones_imput if Ejecución_donaciones==.
+
+keep  ubigeo Ejecución_donaciones
+order ubigeo Ejecución_donaciones
 
 save "$Output\Porcentaje de ejecución donaciones y transferencia.dta", replace
 
@@ -134,6 +179,33 @@ merge 1:1 ubigeo using "$Output\PIM promedio donaciones y Transferencia.dta", no
 merge 1:1 ubigeo using "$Output\Porcentaje de ejecución promedio total.dta", nogen
 merge 1:1 ubigeo using "$Output\Porcentaje de ejecución FIDT.dta", nogen
 merge 1:1 ubigeo using "$Output\Porcentaje de ejecución donaciones y transferencia.dta", nogen
+
+* Imputation at the provincial level
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+mdesc
+
+gen id_reg_prov = substr(ubigeo,1,4)
+
+bys id_reg_prov: egen PIM_promedio_donaciones_imput_p = mean(PIM_promedio_donaciones)
+bys id_reg_prov: egen Ejecución_donaciones_imput_p    = mean(Ejecución_donaciones)
+
+replace PIM_promedio_donaciones =PIM_promedio_donaciones_imput_p if PIM_promedio_donaciones==.
+replace Ejecución_donaciones    =Ejecución_donaciones_imput_p    if Ejecución_donaciones==.
+
+* Imputation at the regional level
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+mdesc
+
+gen id_reg = substr(ubigeo,1,2)
+
+bys id_reg: egen PIM_promedio_donaciones_imput_r = mean(PIM_promedio_donaciones)
+bys id_reg: egen Ejecución_donaciones_imput_r    = mean(Ejecución_donaciones)
+
+replace PIM_promedio_donaciones =PIM_promedio_donaciones_imput_r if PIM_promedio_donaciones==.
+replace Ejecución_donaciones    =Ejecución_donaciones_imput_r    if Ejecución_donaciones==.
+
+drop id_reg_prov PIM_promedio_donaciones_imput_p Ejecución_donaciones_imput_p id_reg PIM_promedio_donaciones_imput_r Ejecución_donaciones_imput_r
+
 save "$Output\10 Recursos Presupuestales.dta", replace
 
 
