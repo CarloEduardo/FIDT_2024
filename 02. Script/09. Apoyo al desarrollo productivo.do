@@ -10,7 +10,7 @@ set more off
 global Path_1 = "E:\01. DataBase\1. INEI\5 CVP 2017"
 global Path_2 = "E:\01. DataBase\1. INEI\4 SISCONCODE"
 global Path_3 = "E:\01. DataBase\5. MIDAGRI"
-
+global Ubigeo = "E:\01. DataBase\1. INEI\4 SISCONCODE\01. UBIGEO 2022"
 global Output = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\09. Apoyo al desarrollo productivo"
 
 ********************************************************************************
@@ -126,11 +126,65 @@ save "$Output\Número de productores.dta", replace
 ********************************************************************************
 ********************************************************************************
 
-use "$Output\PEA ocupada agrícola.dta", clear
+use "$Ubigeo\UBIGEO 2022.dta", clear
+merge 1:1 ubigeo using "$Output\PEA ocupada agrícola.dta", nogen
 merge 1:1 ubigeo using "$Output\Superficie Agricola.dta", nogen
 merge 1:1 ubigeo using "$Output\Valor Bruto de la Producción.dta", nogen
 merge 1:1 ubigeo using "$Output\Número de productores.dta", nogen
-save "$Output\09 Apoyo al desarrollo productivo.dta", replace
+
+* Imputation at the provincial level
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+mdesc
+
+gen id_reg_prov = substr(ubigeo,1,4)
+
+bys id_reg_prov: egen PEA_Agri_gana_silvi_pesca_ip = mean(PEA_Agri_gana_silvi_pesca)
+bys id_reg_prov: egen Superficie_agrícola_ha_ip    = mean(Superficie_agrícola_ha)
+bys id_reg_prov: egen Superficie_territorial_ha_ip = mean(Superficie_territorial_ha)
+bys id_reg_prov: egen VBP_corriente_2023_ip   	   = mean(VBP_corriente_2023)
+bys id_reg_prov: egen Número_productores_ip        = mean(Número_productores)
+
+replace PEA_Agri_gana_silvi_pesca =PEA_Agri_gana_silvi_pesca_ip if PEA_Agri_gana_silvi_pesca==.
+replace Superficie_agrícola_ha    =Superficie_agrícola_ha_ip    if Superficie_agrícola_ha==.
+replace Superficie_territorial_ha =Superficie_territorial_ha_ip if Superficie_territorial_ha==.
+replace VBP_corriente_2023        =VBP_corriente_2023_ip        if VBP_corriente_2023==.
+replace Número_productores        =Número_productores_ip        if Número_productores==.
+
+drop id_reg_prov PEA_Agri_gana_silvi_pesca_ip Superficie_agrícola_ha_ip Superficie_territorial_ha_ip VBP_corriente_2023_ip Número_productores_ip
+
+mdesc
+
+* Imputation at the regional level
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+mdesc
+
+gen id_reg = substr(ubigeo,1,2)
+
+bys id_reg: egen PEA_Agri_gana_silvi_pesca_ir = mean(PEA_Agri_gana_silvi_pesca)
+bys id_reg: egen Superficie_agrícola_ha_ir    = mean(Superficie_agrícola_ha)
+bys id_reg: egen Superficie_territorial_ha_ir = mean(Superficie_territorial_ha)
+bys id_reg: egen VBP_corriente_2023_ir   	  = mean(VBP_corriente_2023)
+bys id_reg: egen Número_productores_ir        = mean(Número_productores)
+
+replace PEA_Agri_gana_silvi_pesca =PEA_Agri_gana_silvi_pesca_ir if PEA_Agri_gana_silvi_pesca==.
+replace Superficie_agrícola_ha    =Superficie_agrícola_ha_ir    if Superficie_agrícola_ha==.
+replace Superficie_territorial_ha =Superficie_territorial_ha_ir if Superficie_territorial_ha==.
+replace VBP_corriente_2023        =VBP_corriente_2023_ir        if VBP_corriente_2023==.
+replace Número_productores        =Número_productores_ir        if Número_productores==.
+
+drop id_reg PEA_Agri_gana_silvi_pesca_ir Superficie_agrícola_ha_ir Superficie_territorial_ha_ir VBP_corriente_2023_ir Número_productores_ir
+
+mdesc
+
+* Save
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+save "$Output\09. Apoyo al desarrollo productivo_all.dta", replace
+
+drop REGION PROVINCIA DISTRITO
+
+save "$Output\09. Apoyo al desarrollo productivo.dta", replace
+
 
 
 

@@ -25,7 +25,8 @@ global Output                  = "$Path\03. Output"
 * Data Warehouse
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-use "$Salud\01. Salud Básica.dta", clear
+use "$Ubigeo\UBIGEO 2022.dta", clear
+merge 1:1 ubigeo using "$Salud\01. Salud Básica.dta", nogen
 merge 1:1 ubigeo using "$Desnutrición\02. Desnutrición infantil yo anemia infantil.dta", nogen
 merge 1:1 ubigeo using "$Educación\03.1 Servicios de educación básica.dta", nogen
 merge 1:1 ubigeo using "$Educación\03.2 Servicios de educación básica.dta", nogen
@@ -35,8 +36,6 @@ merge 1:1 ubigeo using "$Telecomunicación\08. Telecomunicación rural.dta", kee
 merge 1:1 ubigeo using "$Desarrollo_Productivo\09. Apoyo al desarrollo productivo.dta", nogen
 merge 1:1 ubigeo using "$Recursos_Presupuestales\10. Recursos Presupuestales.dta", nogen
 merge 1:1 ubigeo using "$Pobreza\11. Pobreza monetaria 2018.dta", nogen
-
-merge 1:1 ubigeo using "$Saneamiento\05. Vivienda y saneamiento.dta", keepusing(ubigeo) keep(3) nogen
 
 * Rename vars.
 *'''''''''''''
@@ -89,12 +88,12 @@ rename Superficie_agrícola_ha          v43_Superficie_agrícola_ha
 rename Superficie_territorial_ha       v43_Superficie_territorial_ha 
 rename VBP_corriente_2023 		       v44_VBP_corriente_2023
 rename Número_productores 		       v45_Número_productores
-rename PIM_promedio                    v46_PIM_promedio
-rename PIM_promedio_FIDT               v47_PIM_promedio_FIDT
+rename PIM_promedio_total              v46_PIM_promedio_total
+rename PIM_promedio_FIDT               v47_PIM_PIM_promedio_FIDT
 rename PIM_promedio_donaciones         v48_PIM_promedio_donaciones
 rename Ejecución_total                 v49_Ejecución_total
 rename Ejecución_FIDT                  v50_Ejecución_FIDT
-rename Ejecución_promedio_donaciones   v51_Ejecución_donaciones
+rename Ejecución_donaciones  		   v51_Ejecución_donaciones
 rename Pobreza_monetaria               v52_Pobreza_monetaria
 
 
@@ -138,6 +137,7 @@ label variable v46_PIM_promedio v47_PIM_promedio_FIDT v48_PIM_promedio_donacione
 label variable v51_Ejecución_donaciones v52_Pobreza_monetaria ""
 */
 
+mdesc
 
 save "$Input\Data_Warehouse.dta", replace
 save "$Path\Data_Warehouse.dta", replace

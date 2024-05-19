@@ -18,6 +18,7 @@ set more off
 * Work route
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
+global Ubigeo = "E:\01. DataBase\1. INEI\4 SISCONCODE\01. UBIGEO 2022"
 global Output = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\02. Desnutrición infantil yo anemia infantil"
 
 ********************************************************************************
@@ -82,6 +83,52 @@ save "$Output\Anemia.dta", replace
 
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-use ubigeo Desnutricion_cromica using "$Output\Desnutrición.dta", clear
+use "$Ubigeo\UBIGEO 2022.dta", clear
+
+merge 1:1 ubigeo using "$Output\Desnutrición.dta", keepusing(Desnutricion_cromica) nogen
 merge 1:1 ubigeo using "$Output\Anemia.dta", keepusing(Anemia_total) nogen
+
+* Imputation at the provincial level
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+mdesc
+
+gen id_reg_prov = substr(ubigeo,1,4)
+
+bys id_reg_prov: egen Desnutricion_cromica_ip = mean(Desnutricion_cromica)
+bys id_reg_prov: egen Anemia_total_ip         = mean(Anemia_total)
+
+replace Desnutricion_cromica  = Desnutricion_cromica_ip  if Desnutricion_cromica==.
+replace Anemia_total          = Anemia_total_ip          if Anemia_total==.
+
+drop id_reg_prov Desnutricion_cromica_ip Anemia_total_ip
+
+mdesc
+
+/*
+* Imputation at the regional level
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+mdesc
+
+gen id_reg = substr(ubigeo,1,2)
+
+bys id_reg: egen Establecimientos_salud_SP_ir = mean(Establecimientos_salud_SP)
+bys id_reg: egen Con_discapacidad_ir          = mean(Con_discapacidad)
+bys id_reg: egen Sin_seguro_ir                = mean(Sin_seguro)
+
+replace Con_discapacidad = Con_discapacidad_ir if Con_discapacidad==.
+replace Sin_seguro       = Sin_seguro_ir       if Sin_seguro==.
+
+drop id_reg Con_discapacidad_ir Sin_seguro_ir
+
+mdesc
+*/
+
+* Save
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+save "$Output\02 Desnutrición infantil yo anemia infantil_all.dta", replace
+
+drop REGION PROVINCIA DISTRITO
+
 save "$Output\02 Desnutrición infantil yo anemia infantil.dta", replace
+

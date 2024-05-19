@@ -8,6 +8,7 @@ set more off
 * Work route
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 global Path   = "E:\01. DataBase\1. INEI\5 CVP 2017"
+global Ubigeo = "E:\01. DataBase\1. INEI\4 SISCONCODE\01. UBIGEO 2022"
 global Output = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\05. Servicio de Saneamiento"
 
 ********************************************************************************
@@ -82,4 +83,52 @@ lab var Sin_desagüe "Falta de acceso a red pública de desagüe"
 
 collapse (mean) Sin_agua Sin_desagüe, by(ubigeo)
 
-save "$Output\05 Vivienda y saneamiento.dta", replace
+save "$Output\Vivienda y saneamiento.dta", replace
+
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+use "$Ubigeo\UBIGEO 2022.dta", clear
+merge 1:1 ubigeo using "$Output\Vivienda y saneamiento.dta", keepusing(Sin_agua Sin_desagüe) nogen
+
+* Imputation at the provincial level
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+mdesc
+
+gen id_reg_prov = substr(ubigeo,1,4)
+
+bys id_reg_prov: egen Sin_agua_ip    = mean(Sin_agua)
+bys id_reg_prov: egen Sin_desagüe_ip = mean(Sin_desagüe)
+
+replace Sin_agua    = Sin_agua_ip    if Sin_agua==.
+replace Sin_desagüe = Sin_desagüe_ip if Sin_desagüe==.
+
+drop id_reg_prov Sin_agua_ip Sin_desagüe_ip
+
+mdesc
+
+/*
+* Imputation at the regional level
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+mdesc
+
+gen id_reg = substr(ubigeo,1,2)
+
+bys id_reg: egen Sin_agua_ir    = mean(Sin_agua)
+bys id_reg: egen Sin_desagüe_ir = mean(Sin_desagüe)
+
+replace Sin_agua    = Sin_agua_ir    if Sin_agua==.
+replace Sin_desagüe = Sin_desagüe_ir if Sin_desagüe==.
+
+drop id_reg_prov Sin_agua_ir Sin_desagüe_ir
+
+mdesc
+*/
+
+* Save
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+save "$Output\05. Vivienda y saneamiento_all.dta", replace
+
+drop REGION PROVINCIA DISTRITO
+
+save "$Output\05. Vivienda y saneamiento.dta", replace

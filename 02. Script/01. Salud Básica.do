@@ -10,6 +10,7 @@ set more off
 * Work route
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 global Path   = "E:\01. DataBase\1. INEI\5 CVP 2017"
+global Ubigeo = "E:\01. DataBase\1. INEI\4 SISCONCODE\01. UBIGEO 2022"
 global Output = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\01. Salud Básica"
 
 ********************************************************************************
@@ -157,22 +158,55 @@ save "$Output\Sin seguro y con discapacidad.dta", replace
 ********************************************************************************
 ********************************************************************************
 
-use "$Output\RENIPRESS.dta", replace
+use "$Ubigeo\UBIGEO 2022.dta", clear
 
-merge 1:1 ubigeo using "$Output\Sin seguro y con discapacidad.dta"
+merge 1:1 ubigeo using "$Output\RENIPRESS.dta", nogen
+merge 1:1 ubigeo using "$Output\Sin seguro y con discapacidad.dta", nogen
 
-tab _merge, miss
+keep  ubigeo REGION PROVINCIA DISTRITO Establecimientos_salud_SP Con_discapacidad Sin_seguro 
+order ubigeo REGION PROVINCIA DISTRITO Establecimientos_salud_SP Con_discapacidad Sin_seguro
+
+* Imputation at the provincial level
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+mdesc
+
+gen id_reg_prov = substr(ubigeo,1,4)
+
+bys id_reg_prov: egen Establecimientos_salud_SP_ip = mean(Establecimientos_salud_SP)
+bys id_reg_prov: egen Con_discapacidad_ip          = mean(Con_discapacidad)
+bys id_reg_prov: egen Sin_seguro_ip                = mean(Sin_seguro)
+
+replace Establecimientos_salud_SP = Establecimientos_salud_SP_ip if Establecimientos_salud_SP==.
+replace Con_discapacidad          = Con_discapacidad_ip          if Con_discapacidad==.
+replace Sin_seguro                = Sin_seguro_ip                if Sin_seguro==.
+
+drop id_reg_prov Con_discapacidad_ip Sin_seguro_ip
+
+mdesc
 /*
-                 _merge |      Freq.     Percent        Cum.
-------------------------+-----------------------------------
-        master only (1) |          3        0.16        0.16
-         using only (2) |          2        0.11        0.27
-            matched (3) |      1,872       99.73      100.00
-------------------------+-----------------------------------
-                  Total |      1,877      100.00
+* Imputation at the regional level
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+mdesc
+
+gen id_reg = substr(ubigeo,1,2)
+
+bys id_reg: egen Establecimientos_salud_SP_ir = mean(Establecimientos_salud_SP)
+bys id_reg: egen Con_discapacidad_ir          = mean(Con_discapacidad)
+bys id_reg: egen Sin_seguro_ir                = mean(Sin_seguro)
+
+replace Con_discapacidad = Con_discapacidad_ir if Con_discapacidad==.
+replace Sin_seguro       = Sin_seguro_ir       if Sin_seguro==.
+
+drop id_reg Con_discapacidad_ir Sin_seguro_ir
+
+mdesc
 */
 
-keep  ubigeo Establecimientos_salud_SP Con_discapacidad Sin_seguro 
-order ubigeo Establecimientos_salud_SP Con_discapacidad Sin_seguro
+* Save
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-save "$Output\01 Salud Básica.dta", replace
+save "$Output\01. Salud Básica_all.dta", replace
+
+drop REGION PROVINCIA DISTRITO
+
+save "$Output\01. Salud Básica.dta", replace
