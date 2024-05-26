@@ -96,7 +96,7 @@ rename Ejecución_total                 v49_Ejecución_total
 rename Ejecución_FIDT                  v50_Ejecución_FIDT
 rename Ejecución_donaciones  		   v51_Ejecución_donaciones
 rename Pobreza_monetaria               v52_Pobreza_monetaria
-
+	
 global vars = "v01_Establecimientos_salud_SP v02_Con_discapacidad v03_Sin_seguro v04_Desnutricion_cromica v05_Anemia_total v06_No_leer_escribir v07_Asiste_IE_otro_distrito v08_Nivel_secundaria_más_17 v09_Años_escolaridad v10_No_estudian_6_17 v11_Sin_electricidad_LE v12_Sin_aula_acondicionada_LE v13_Sin_PC_Tablet_Laptop v14_Años_existencia_infra_LE v15_No_Registros_Públicos_LE v16_No_paredes_aula_LE v17_No_piso_aula_LE v18_No_techo_aula_LE v19_Sin_agua_LE v20_Sin_desagüe_LE v23_Cerco_perimétrico_total v23_Cerco_perimétrico_parcial v23_Cerco_perimétrico_no_tiene v24_Cantidad_LE v25_cond_inadecuadas_inicial v26_cond_inadecuadas_primaria v27_cond_inadecuadas_secundaria v28_Red_vial_regional_inade v29_Red_vial_regional_imple v30_Red_vial_nacional_inade v31_Red_vial_nacional_imple v32_Red_vial_vecinal_inade v33_Red_vial_vecinal_imple v34_Sin_agua v35_Sin_desagüe v36_Sin_electricidad_rural v37_P_Población_rural v38_Sin_teléfono_celular_rural v39_Sin_teléfono_fijo_rural v40_Sin_conexión_internet_rural v41_Cobertura_inter_movil_rural v42_PEA_Agri_gana_silvi_pesca v43_Superficie_agrícola_ha v43_Superficie_territorial_ha v44_VBP_corriente_2023 v45_Número_productores v46_PIM_promedio_total v47_PIM_promedio_FIDT v48_PIM_promedio_donaciones v49_Ejecución_total v50_Ejecución_FIDT v51_Ejecución_donaciones v52_Pobreza_monetaria"
 
 * Imputation 
@@ -282,6 +282,29 @@ foreach x in $vars {
 drop id_reg
 
 mdesc
+
+********************************************************************************
+********************************************************************************
+********************************************************************************
+
+gen id_reg_prov = substr(ubigeo,1,4)
+
+global vars_num = "v01_Establecimientos_salud_SP v09_Años_escolaridad v24_Cantidad_LE v41_Cobertura_inter_movil_rural v43_Superficie_agrícola_ha v43_Superficie_territorial_ha v45_Número_productores"
+
+foreach x in $vars_num {
+	bys id_reg_prov: egen `x'x = max(`x')
+	gen `x'm = `x'x - `x' 
+	drop `x'x
+	order `x'm, after(`x')
+}
+
+drop id_reg_prov
+
+sort ubigeo
+
+********************************************************************************
+********************************************************************************
+********************************************************************************
 
 save "$Input\Data_Warehouse.dta", replace
 save "$Path\Data_Warehouse.dta", replace
