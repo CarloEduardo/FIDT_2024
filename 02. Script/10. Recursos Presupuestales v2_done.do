@@ -21,17 +21,15 @@ global Output = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\10. Rec
 * Importing database
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-import excel "$MEF\Solicitud_FIDT_GRGL.xlsx", sheet("PIM TOTAL") firstrow clear cellrange(A3:E2079)
+import excel "$MEF\Solicitud_FIDT_GRGL_27.xlsx", sheet("PIM TOTAL") firstrow clear cellrange(A4:E1895)
 
 rename UBIGEO_SIAF   ubigeo
 rename PromediodePIM PIM_promedio_total
 
-drop if DISTRITO=="99. MULTIDISTRITAL"
-
-br if ubigeo=="160109"
-
 keep  ubigeo PIM_promedio_total
 order ubigeo PIM_promedio_total
+
+unique ubigeo
 
 save "$Output\PIM promedio total.dta", replace
 
@@ -44,15 +42,15 @@ save "$Output\PIM promedio total.dta", replace
 * Importing database
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-import excel "$MEF\Solicitud_FIDT_GRGL.xlsx", sheet("PIM FUNCION FIDT") firstrow clear cellrange(A4:E2073)
+import excel "$MEF\Solicitud_FIDT_GRGL_27.xlsx", sheet("PIM FUNCION FIDT") firstrow clear cellrange(A5:E1895)
 
 rename UBIGEO_SIAF   ubigeo
 rename PromediodePIM PIM_promedio_FIDT
 
-drop if DISTRITO=="99. MULTIDISTRITAL"
-
 keep  ubigeo PIM_promedio_FIDT
 order ubigeo PIM_promedio_FIDT
+
+unique ubigeo
 
 save "$Output\PIM promedio FIDT.dta", replace
 
@@ -65,18 +63,18 @@ save "$Output\PIM promedio FIDT.dta", replace
 * Importing database
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-import excel "$MEF\Solicitud_FIDT_GRGL.xlsx", sheet("PIM DONACIONES") firstrow clear cellrange(A4:E1471)
+import excel "$MEF\Solicitud_FIDT_GRGL_27.xlsx", sheet("PIM DONACIONES") firstrow clear cellrange(A5:E1430)
 
 rename UBIGEO_SIAF   ubigeo
 rename PromediodePIM PIM_promedio_donaciones
 
-drop if DISTRITO=="99. MULTIDISTRITAL"
-
 keep  ubigeo PIM_promedio_donaciones
 order ubigeo PIM_promedio_donaciones
 
-save "$Output\PIM promedio donaciones y Transferencia.dta", replace
+unique ubigeo
 
+save "$Output\PIM promedio donaciones y Transferencia.dta", replace
+/*
 ********************************************************************************
 ********************************************************************************
 * Porcentaje de ejecución promedio total
@@ -172,6 +170,7 @@ keep  ubigeo Ejecución_donaciones
 order ubigeo Ejecución_donaciones
 
 save "$Output\Porcentaje de ejecución donaciones y transferencia.dta", replace
+*/
 
 ********************************************************************************
 ********************************************************************************
@@ -180,9 +179,6 @@ use "$Ubigeo\UBIGEO 2022.dta", clear
 merge 1:1 ubigeo using "$Output\PIM promedio total.dta", nogen
 merge 1:1 ubigeo using "$Output\PIM promedio FIDT.dta", nogen
 merge 1:1 ubigeo using "$Output\PIM promedio donaciones y Transferencia.dta", nogen
-merge 1:1 ubigeo using "$Output\Porcentaje de ejecución promedio total.dta", nogen
-merge 1:1 ubigeo using "$Output\Porcentaje de ejecución FIDT.dta", nogen
-merge 1:1 ubigeo using "$Output\Porcentaje de ejecución donaciones y transferencia.dta", nogen
 
 br if inlist(ubigeo, "030612", "050413", "050512", "050513", "050514", "050515", "080915", "080916", "080917") // 9 distritos 
 br if inlist(ubigeo, "080918", "090724", "090725", "130112", "160109", "180107", "221006", "250306", "250307") // 9 distritos
