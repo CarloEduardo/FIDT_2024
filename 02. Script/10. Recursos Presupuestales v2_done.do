@@ -21,13 +21,23 @@ global Output = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\10. Rec
 * Importing database
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-import excel "$MEF\Solicitud_FIDT_GRGL_27.xlsx", sheet("PIM TOTAL") firstrow clear cellrange(A4:E1895)
+import excel "$MEF\Solicitud_FIDT_GRGL_27_v2.xlsx", sheet("PIM TOTAL") firstrow clear cellrange(A6:G1897)
 
 rename UBIGEO_SIAF   ubigeo
-rename PromediodePIM PIM_promedio_total
+rename E PIM_total_2021
+rename F PIM_total_2022
+rename G PIM_total_2023
 
-keep  ubigeo PIM_promedio_total
-order ubigeo PIM_promedio_total
+egen PIM_promedio_total_mean = rowmean(PIM_total_2021 PIM_total_2022 PIM_total_2023)
+
+egen SUMA = rowtotal(PIM_total_2021 PIM_total_2022 PIM_total_2023)
+
+gen PIM_promedio_total_all = SUMA/3
+
+drop SUMA
+
+keep  ubigeo PIM_total_2021 PIM_total_2022 PIM_total_2023 PIM_promedio_total_mean PIM_promedio_total_all
+order ubigeo PIM_total_2021 PIM_total_2022 PIM_total_2023 PIM_promedio_total_mean PIM_promedio_total_all
 
 unique ubigeo
 
@@ -42,13 +52,23 @@ save "$Output\PIM promedio total.dta", replace
 * Importing database
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-import excel "$MEF\Solicitud_FIDT_GRGL_27.xlsx", sheet("PIM FUNCION FIDT") firstrow clear cellrange(A5:E1895)
+import excel "$MEF\Solicitud_FIDT_GRGL_27_v2.xlsx", sheet("PIM FUNCION FIDT") firstrow clear cellrange(A6:G1896)
 
 rename UBIGEO_SIAF   ubigeo
-rename PromediodePIM PIM_promedio_FIDT
+rename E PIM_FIDT_2021
+rename F PIM_FIDT_2022
+rename G PIM_FIDT_2023
 
-keep  ubigeo PIM_promedio_FIDT
-order ubigeo PIM_promedio_FIDT
+egen PIM_promedio_FIDT_mean = rowmean(PIM_FIDT_2021 PIM_FIDT_2022 PIM_FIDT_2023)
+
+egen SUMA = rowtotal(PIM_FIDT_2021 PIM_FIDT_2022 PIM_FIDT_2023)
+
+gen PIM_promedio_FIDT_all = SUMA/3
+
+drop SUMA
+
+keep  ubigeo PIM_FIDT_2021 PIM_FIDT_2022 PIM_FIDT_2023 PIM_promedio_FIDT_mean PIM_promedio_FIDT_all
+order ubigeo PIM_FIDT_2021 PIM_FIDT_2022 PIM_FIDT_2023 PIM_promedio_FIDT_mean PIM_promedio_FIDT_all
 
 unique ubigeo
 
@@ -63,17 +83,28 @@ save "$Output\PIM promedio FIDT.dta", replace
 * Importing database
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-import excel "$MEF\Solicitud_FIDT_GRGL_27.xlsx", sheet("PIM DONACIONES") firstrow clear cellrange(A5:E1430)
+import excel "$MEF\Solicitud_FIDT_GRGL_27_v2.xlsx", sheet("PIM DONACIONES") firstrow clear cellrange(A6:G1279)
 
 rename UBIGEO_SIAF   ubigeo
-rename PromediodePIM PIM_promedio_donaciones
+rename E PIM_donaciones_2021
+rename F PIM_donaciones_2022
+rename G PIM_donaciones_2023
 
-keep  ubigeo PIM_promedio_donaciones
-order ubigeo PIM_promedio_donaciones
+egen PIM_promedio_donaciones_mean = rowmean(PIM_donaciones_2021 PIM_donaciones_2022 PIM_donaciones_2023)
+
+egen SUMA = rowtotal(PIM_donaciones_2021 PIM_donaciones_2022 PIM_donaciones_2023)
+
+gen PIM_promedio_donaciones_all = SUMA/3
+
+drop SUMA
+
+keep  ubigeo PIM_donaciones_2021 PIM_donaciones_2022 PIM_donaciones_2023 PIM_promedio_donaciones_mean PIM_promedio_donaciones_all
+order ubigeo PIM_donaciones_2021 PIM_donaciones_2022 PIM_donaciones_2023 PIM_promedio_donaciones_mean PIM_promedio_donaciones_all
 
 unique ubigeo
 
 save "$Output\PIM promedio donaciones y Transferencia.dta", replace
+
 /*
 ********************************************************************************
 ********************************************************************************
