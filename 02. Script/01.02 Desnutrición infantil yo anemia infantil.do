@@ -30,7 +30,7 @@ global Output  = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\02. De
 * Importing database
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-import excel "$INS\Indicadores Niños Enero – Diciembre 2022 (Base de Datos HIS-Minsa).xlsx", sheet("EN 0-59m x DISTRITO") firstrow clear
+import excel "$INS\Indicadores Niños Enero – Diciembre (Base de Datos HIS-Minsa).xlsx", sheet("EN 0-59m x DISTRITO") firstrow clear
 
 rename (E F G) (ubigeo Población_evaluados Población_desnutricion_cromica)
 keep ubigeo Población_evaluados Población_desnutricion_cromica
@@ -57,7 +57,7 @@ save "$Output\Desnutrición.dta", replace
 * Importing database
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-import excel "$INS\Indicadores Niños Enero – Diciembre 2022 (Base de Datos HIS-Minsa).xlsx", sheet("Anemia 6-35m x DISTRITO") firstrow clear
+import excel "$INS\Indicadores Niños Enero – Diciembre (Base de Datos HIS-Minsa).xlsx", sheet("Anemia 6-35m x DISTRITO") firstrow clear
 
 rename (E F G) (ubigeo Población_evaluados Población_anemia_total)
 keep ubigeo Población_evaluados Población_anemia_total

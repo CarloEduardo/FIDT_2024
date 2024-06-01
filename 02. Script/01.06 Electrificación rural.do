@@ -10,7 +10,6 @@ set more off
 global Path            = "E:\01. DataBase\FIDT"
 global Ubigeo          = "$Path\00. Ubigeo"
 global Censo_2017      = "$Path\01. Censo 2017"
-global Censo_Educativo = "$Path\06. Censo Educativo"
 global Output          = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\06. Electrificación rural"
 
 ********************************************************************************
