@@ -9,6 +9,7 @@ set more off
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 global Path   = "E:\01. DataBase\FIDT"
 global Ubigeo = "$Path\00. Ubigeo"
+global Censo_2017 = "$Path\01. Censo 2017"
 global MEF    = "$Path\09. MEF"
 global Output = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\10. Recursos Presupuestales"
 
@@ -19,6 +20,25 @@ global Output = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\10. Rec
 ********************************************************************************
 
 * Importing database
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+import excel "$MEF\Calculo población beneficiaria_geodir-ubigeo-inei.xlsx", sheet("ubigeo_inei") firstrow clear
+
+keep   Ubigeo    Poblacion
+rename Ubigeo    ubigeo
+rename Poblacion Poblacion_geodir
+
+save "$Output\Población geodir.dta", replace
+
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+import excel "$Censo_2017\INFORMACION MEF REG. 7922.xlsx", sheet("SEGURO_DIST") clear cellrange(B8:O1898)
+
+keep B D 
+rename B ubigeo	
+rename D Poblacion_inei
+
+save "$Output\Población inei.dta", replace
+
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 import excel "$MEF\Solicitud_FIDT_GRGL_27_v2.xlsx", sheet("PIM TOTAL") firstrow clear cellrange(A6:G1897)
@@ -210,6 +230,8 @@ use "$Ubigeo\UBIGEO 2022.dta", clear
 merge 1:1 ubigeo using "$Output\PIM promedio total.dta", nogen
 merge 1:1 ubigeo using "$Output\PIM promedio FIDT.dta", nogen
 merge 1:1 ubigeo using "$Output\PIM promedio donaciones y Transferencia.dta", nogen
+merge 1:1 ubigeo using "$Output\Población geodir.dta", nogen
+merge 1:1 ubigeo using "$Output\Población inei.dta", nogen
 
 br if inlist(ubigeo, "030612", "050413", "050512", "050513", "050514", "050515", "080915", "080916", "080917") // 9 distritos 
 br if inlist(ubigeo, "080918", "090724", "090725", "130112", "160109", "180107", "221006", "250306", "250307") // 9 distritos
