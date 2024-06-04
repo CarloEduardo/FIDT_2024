@@ -9,9 +9,58 @@ set more off
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 global Path   = "E:\01. DataBase\FIDT"
 global Ubigeo = "$Path\00. Ubigeo"
-global Censo_2017 = "$Path\01. Censo 2017"
 global MEF    = "$Path\09. MEF"
 global Output = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\10. Recursos Presupuestales"
+
+********************************************************************************
+********************************************************************************
+* Población
+********************************************************************************
+********************************************************************************
+
+* Importing database
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+import excel "$MEF\TB_UBIGEOS.xlsx", sheet("TB_UBIGEOS") firstrow clear
+
+keep ubigeo_reniec ubigeo_inei departamento provincia distrito
+
+tostring ubigeo_reniec, replace
+tostring ubigeo_inei, replace
+
+replace ubigeo_reniec = "0" + ubigeo_reniec if length(ubigeo_reniec)==5
+replace ubigeo_inei   = "0" + ubigeo_inei   if length(ubigeo_inei)==5
+
+save "$Output\TB_UBIGEOS.dta", replace
+
+import excel "$MEF\C02.1a.2023.IV.xlsx", sheet("w2.1a_IV.23") firstrow clear
+
+* 36 609 219 - Total Población Identificada
+* 35 411 932 - En el Territorio Nacional
+
+keep   D E F 
+rename D distrito_reniec
+rename E ubigeo_reniec
+rename F Poblacion_reniec
+keep if distrito!="" & ubigeo!="" & Poblacion_reniec!=""
+
+destring Poblacion_reniec, replace
+
+merge 1:1 ubigeo_reniec using "$Output\TB_UBIGEOS.dta"
+
+br if _merge!=3
+
+replace ubigeo_inei="130112" if distrito_reniec=="Alto Trujillo" & _merge==1
+
+drop if _merge==2
+
+keep ubigeo_inei Poblacion_reniec
+
+rename ubigeo_inei ubigeo
+
+save "$Output\Población reniec 2023.dta", replace
+
+erase "$Output\TB_UBIGEOS.dta"
 
 ********************************************************************************
 ********************************************************************************
@@ -21,47 +70,15 @@ global Output = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\10. Rec
 
 * Importing database
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-import excel "$MEF\Calculo población beneficiaria_geodir-ubigeo-inei.xlsx", sheet("ubigeo_inei") firstrow clear
 
-keep   Ubigeo    Poblacion
-rename Ubigeo    ubigeo
-rename Poblacion Poblacion_geodir
+import excel "$MEF\Solicitud_FIDT_GRGL_vxRub_03062024.xlsx", sheet("PIM1 RO+ROOC") firstrow clear cellrange(A5:O29171)
 
-save "$Output\Población geodir.dta", replace
+rename UBIGEO_SIAF ubigeo
+rename O           PIM_1_RO_más_ROOC
 
-*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+collapse (sum) PIM_1_RO_más_ROOC ,by(ubigeo)
 
-import excel "$Censo_2017\INFORMACION MEF REG. 7922.xlsx", sheet("SEGURO_DIST") clear cellrange(B8:O1898)
-
-keep B D 
-rename B ubigeo	
-rename D Poblacion_inei
-
-save "$Output\Población inei.dta", replace
-
-*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-import excel "$MEF\Solicitud_FIDT_GRGL_27_v2.xlsx", sheet("PIM TOTAL") firstrow clear cellrange(A6:G1897)
-
-rename UBIGEO_SIAF   ubigeo
-rename E PIM_total_2021
-rename F PIM_total_2022
-rename G PIM_total_2023
-
-egen PIM_promedio_total_mean = rowmean(PIM_total_2021 PIM_total_2022 PIM_total_2023)
-
-egen SUMA = rowtotal(PIM_total_2021 PIM_total_2022 PIM_total_2023)
-
-gen PIM_promedio_total_all = SUMA/3
-
-drop SUMA
-
-keep  ubigeo PIM_total_2021 PIM_total_2022 PIM_total_2023 PIM_promedio_total_mean PIM_promedio_total_all
-order ubigeo PIM_total_2021 PIM_total_2022 PIM_total_2023 PIM_promedio_total_mean PIM_promedio_total_all
-
-unique ubigeo
-
-save "$Output\PIM promedio total.dta", replace
+save "$Output\PIM 1 RO+ROOC.dta", replace
 
 ********************************************************************************
 ********************************************************************************
@@ -72,27 +89,14 @@ save "$Output\PIM promedio total.dta", replace
 * Importing database
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-import excel "$MEF\Solicitud_FIDT_GRGL_27_v2.xlsx", sheet("PIM FUNCION FIDT") firstrow clear cellrange(A6:G1896)
+import excel "$MEF\Solicitud_FIDT_GRGL_vxRub_03062024.xlsx", sheet("PIM2 RD-CANON") firstrow clear cellrange(A6:N52075)
 
-rename UBIGEO_SIAF   ubigeo
-rename E PIM_FIDT_2021
-rename F PIM_FIDT_2022
-rename G PIM_FIDT_2023
+rename UBIGEO_SIAF ubigeo
+rename N           PIM_2_RD_menos_CANON
 
-egen PIM_promedio_FIDT_mean = rowmean(PIM_FIDT_2021 PIM_FIDT_2022 PIM_FIDT_2023)
+collapse (sum) PIM_2_RD_menos_CANON ,by(ubigeo)
 
-egen SUMA = rowtotal(PIM_FIDT_2021 PIM_FIDT_2022 PIM_FIDT_2023)
-
-gen PIM_promedio_FIDT_all = SUMA/3
-
-drop SUMA
-
-keep  ubigeo PIM_FIDT_2021 PIM_FIDT_2022 PIM_FIDT_2023 PIM_promedio_FIDT_mean PIM_promedio_FIDT_all
-order ubigeo PIM_FIDT_2021 PIM_FIDT_2022 PIM_FIDT_2023 PIM_promedio_FIDT_mean PIM_promedio_FIDT_all
-
-unique ubigeo
-
-save "$Output\PIM promedio FIDT.dta", replace
+save "$Output\PIM 2 RD-CANON.dta", replace
 
 ********************************************************************************
 ********************************************************************************
@@ -103,140 +107,32 @@ save "$Output\PIM promedio FIDT.dta", replace
 * Importing database
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-import excel "$MEF\Solicitud_FIDT_GRGL_27_v2.xlsx", sheet("PIM DONACIONES") firstrow clear cellrange(A6:G1279)
+import excel "$MEF\Solicitud_FIDT_GRGL_vxRub_03062024.xlsx", sheet("PIM3 CANON") firstrow clear cellrange(A6:N103673)
 
-rename UBIGEO_SIAF   ubigeo
-rename E PIM_donaciones_2021
-rename F PIM_donaciones_2022
-rename G PIM_donaciones_2023
+rename UBIGEO_SIAF ubigeo
+rename N           PIM_3_CANON
 
-egen PIM_promedio_donaciones_mean = rowmean(PIM_donaciones_2021 PIM_donaciones_2022 PIM_donaciones_2023)
+collapse (sum) PIM_3_CANON ,by(ubigeo)
 
-egen SUMA = rowtotal(PIM_donaciones_2021 PIM_donaciones_2022 PIM_donaciones_2023)
-
-gen PIM_promedio_donaciones_all = SUMA/3
-
-drop SUMA
-
-keep  ubigeo PIM_donaciones_2021 PIM_donaciones_2022 PIM_donaciones_2023 PIM_promedio_donaciones_mean PIM_promedio_donaciones_all
-order ubigeo PIM_donaciones_2021 PIM_donaciones_2022 PIM_donaciones_2023 PIM_promedio_donaciones_mean PIM_promedio_donaciones_all
-
-unique ubigeo
-
-save "$Output\PIM promedio donaciones y Transferencia.dta", replace
-
-/*
-********************************************************************************
-********************************************************************************
-* Porcentaje de ejecución promedio total
-********************************************************************************
-********************************************************************************
-
-* Importing database
-*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-import excel "$MEF\Solicitud_FIDT_GRGL.xlsx", sheet("EJECUCION total") firstrow clear cellrange(A2:T2078)
-
-rename UBIGEO_SIAF       ubigeo
-rename ejecucionpromedio Ejecución_total
-
-drop if DISTRITO=="99. MULTIDISTRITAL"
-
-codebook  Ejecución_total ejecucion2019 ejecucion2020 ejecucion2021 ejecucion2022 ejecucion2023
-mdesc     Ejecución_total ejecucion2019 ejecucion2020 ejecucion2021 ejecucion2022 ejecucion2023
-
-br ubigeo Ejecución_total ejecucion2019 ejecucion2020 ejecucion2021 ejecucion2022 ejecucion2023 if Ejecución_total==.
-
-egen Ejecución_total_imput = rowmean(ejecucion2019 ejecucion2020 ejecucion2021 ejecucion2022 ejecucion2023)
-
-compare Ejecución_total Ejecución_total_imput
-
-replace Ejecución_total=Ejecución_total_imput if Ejecución_total==.
-
-keep  ubigeo Ejecución_total
-order ubigeo Ejecución_total
-
-save "$Output\Porcentaje de ejecución promedio total.dta", replace
-
-********************************************************************************
-********************************************************************************
-* Porcentaje de ejecución promedio de inversiones cuya función es subvencionada FIDT
-********************************************************************************
-********************************************************************************
-
-* Importing database
-*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-import excel "$MEF\Solicitud_FIDT_GRGL.xlsx", sheet("EJECUCION FUNCION FIDT") firstrow clear cellrange(A2:T2071)
-
-rename UBIGEO_SIAF       ubigeo
-rename ejecucionpromedio Ejecución_FIDT
-
-drop if DISTRITO=="99. MULTIDISTRITAL"
-
-codebook  Ejecución_FIDT ejecucion2019 ejecucion2020 ejecucion2021 ejecucion2022 ejecucion2023
-mdesc     Ejecución_FIDT ejecucion2019 ejecucion2020 ejecucion2021 ejecucion2022 ejecucion2023
-
-br ubigeo Ejecución_FIDT ejecucion2019 ejecucion2020 ejecucion2021 ejecucion2022 ejecucion2023 if Ejecución_FIDT==.
-
-egen Ejecución_FIDT_imput = rowmean(ejecucion2019 ejecucion2020 ejecucion2021 ejecucion2022 ejecucion2023)
-
-compare Ejecución_FIDT Ejecución_FIDT_imput
-
-replace Ejecución_FIDT=Ejecución_FIDT_imput if Ejecución_FIDT==.
-
-keep  ubigeo Ejecución_FIDT
-order ubigeo Ejecución_FIDT
-
-save "$Output\Porcentaje de ejecución FIDT.dta", replace
-
-********************************************************************************
-********************************************************************************
-* Porcentaje de ejecución promedio de donaciones y transferencia
-********************************************************************************
-********************************************************************************
-
-* Importing database
-*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-import excel "$MEF\Solicitud_FIDT_GRGL.xlsx", sheet("EJECUCION DONACIONES Y TRAN") firstrow clear cellrange(A2:T1469)
-
-rename UBIGEO_SIAF       ubigeo
-rename ejecucionpromedio Ejecución_donaciones
-
-drop if DISTRITO=="99. MULTIDISTRITAL"
-
-codebook  Ejecución_donaciones ejecucion2019 ejecucion2020 ejecucion2021 ejecucion2022 ejecucion2023
-mdesc     Ejecución_donaciones ejecucion2019 ejecucion2020 ejecucion2021 ejecucion2022 ejecucion2023
-
-br ubigeo Ejecución_donaciones ejecucion2019 ejecucion2020 ejecucion2021 ejecucion2022 ejecucion2023 if Ejecución_donaciones==.
-
-egen Ejecución_donaciones_imput = rowmean(ejecucion2019 ejecucion2020 ejecucion2021 ejecucion2022 ejecucion2023)
-
-compare Ejecución_donaciones Ejecución_donaciones_imput
-
-replace Ejecución_donaciones=Ejecución_donaciones_imput if Ejecución_donaciones==.
-
-keep  ubigeo Ejecución_donaciones
-order ubigeo Ejecución_donaciones
-
-save "$Output\Porcentaje de ejecución donaciones y transferencia.dta", replace
-*/
+save "$Output\PIM 3 CANON.dta", replace
 
 ********************************************************************************
 ********************************************************************************
 
 use "$Ubigeo\UBIGEO 2022.dta", clear
-merge 1:1 ubigeo using "$Output\PIM promedio total.dta", nogen
-merge 1:1 ubigeo using "$Output\PIM promedio FIDT.dta", nogen
-merge 1:1 ubigeo using "$Output\PIM promedio donaciones y Transferencia.dta", nogen
-merge 1:1 ubigeo using "$Output\Población geodir.dta", nogen
-merge 1:1 ubigeo using "$Output\Población inei.dta", nogen
+merge 1:1 ubigeo using "$Output\PIM 1 RO+ROOC.dta", nogen
+merge 1:1 ubigeo using "$Output\PIM 2 RD-CANON.dta", nogen
+merge 1:1 ubigeo using "$Output\PIM 3 CANON.dta", nogen
+merge 1:1 ubigeo using "$Output\Población reniec 2023.dta", nogen
 
 br if inlist(ubigeo, "030612", "050413", "050512", "050513", "050514", "050515", "080915", "080916", "080917") // 9 distritos 
 br if inlist(ubigeo, "080918", "090724", "090725", "130112", "160109", "180107", "221006", "250306", "250307") // 9 distritos
 
 mdesc
+
+gen PIM_1_percapita_RO_más_ROOC    = PIM_1_RO_más_ROOC / Poblacion_reniec
+gen PIM_2_percapita_RD_menos_CANON = PIM_2_RD_menos_CANON / Poblacion_reniec
+gen PIM_3_percapita_CANON          = PIM_3_CANON / Poblacion_reniec
 
 * Save
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''

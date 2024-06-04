@@ -41,11 +41,14 @@ merge 1:1 ubigeo using "$Pobreza\11. Pobreza monetaria 2018.dta", nogen
 
 * Rename vars.
 *'''''''''''''
+* SALUD BÁSICA
 rename Establecimientos_salud_SP       v01_Establecimientos_salud_SP 
 rename P_Con_discapacidad              v02_Con_discapacidad
 rename P_Sin_seguro                    v03_Sin_seguro 
+* DESNUTRICIÓN INFANTIL Y /O ANEMIA INFANTIL
 rename Desnutricion_cromica            v04_Desnutricion_cromica
 rename Anemia_total                    v05_Anemia_total
+* SERVICIOS DE EDUCACIÓN BÁSICA
 rename P_Analfabeta               	   v06_No_leer_escribir 
 rename Asiste_IE_otro_distrito         v07_Asiste_IE_otro_distrito 
 rename Nivel_secundaria_más_17         v08_Nivel_secundaria_más_17
@@ -61,8 +64,6 @@ rename No_piso_aula_LE                 v17_No_piso_aula_LE
 rename No_techo_aula_LE                v18_No_techo_aula_LE
 rename Sin_agua_LE                     v19_Sin_agua_LE  
 rename Sin_desagüe_LE                  v20_Sin_desagüe_LE
-*rename xxx                            v21_xxx
-*rename xxx                            v22_xxx
 rename Cerco_perimétrico_total         v23_Cerco_perimétrico_total
 rename Cerco_perimétrico_parcial       v23_Cerco_perimétrico_parcial
 rename Cerco_perimétrico_no_tiene      v23_Cerco_perimétrico_no_tiene
@@ -70,31 +71,35 @@ rename Cantidad_LE                     v24_Cantidad_LE
 rename cond_inadecuadas_inicial 	   v25_cond_inadecuadas_inicial
 rename cond_inadecuadas_primaria 	   v26_cond_inadecuadas_primaria
 rename cond_inadecuadas_secundaria     v27_cond_inadecuadas_secundaria
+* INFRAESTRUCTURA VIAL
 rename Red_vial_regional_inadecuadas   v28_Red_vial_regional_inade
 rename Red_vial_regional_implementar   v29_Red_vial_regional_imple
 rename Red_vial_nacional_inadecuadas   v30_Red_vial_nacional_inade
 rename Red_vial_nacional_implementar   v31_Red_vial_nacional_imple
 rename Red_vial_vecinal_inadecuadas    v32_Red_vial_vecinal_inade
 rename Red_vial_vecinal_implementar    v33_Red_vial_vecinal_imple
+* SERVICIO DE SANEAMIENTO
 rename P_Sin_agua                      v34_Sin_agua
 rename P_Sin_desagüe                   v35_Sin_desagüe
+* ELECTRIFICACIÓN RURAL
 rename P_Sin_electricidad_rural        v36_Sin_electricidad_rural
 rename P_Población_rural               v37_P_Población_rural
+* TELECOMUNICACIÓN RURAL
 rename P_Sin_teléfono_celular_rural    v38_Sin_teléfono_celular_rural
 rename P_Sin_teléfono_fijo_rural       v39_Sin_teléfono_fijo_rural
 rename P_Sin_conexión_internet_rural   v40_Sin_conexión_internet_rural
 rename Cobertura_inter_movil_rural     v41_Cobertura_inter_movil_rural
+* APOYO AL DESARROLLO PRODUCTIVO
+rename Número_productores 		       v45_Número_productores
+* INFRAESTRUCTURA AGRICOLA
 rename PEA_Agri_gana_silvi_pesca       v42_PEA_Agri_gana_silvi_pesca
 rename Superficie_agrícola_ha          v43_Superficie_agrícola_ha
 rename Superficie_territorial_ha       v43_Superficie_territorial_ha 
 rename VBP_corriente_2023 		       v44_VBP_corriente_2023
-rename Número_productores 		       v45_Número_productores
-rename PIM_promedio_total_mean         v46_PIM_promedio_total_mean
-rename PIM_promedio_total_all          v46_PIM_promedio_total_all
-rename PIM_promedio_FIDT_mean          v47_PIM_promedio_FIDT_mean
-rename PIM_promedio_FIDT_all           v47_PIM_promedio_FIDT_all
-rename PIM_promedio_donaciones_mean    v48_PIM_promedio_donaciones_mean
-rename PIM_promedio_donaciones_all     v48_PIM_promedio_donaciones_all
+* DISPONIBILIDAD DE RECURSOS PRESUPUESTALES
+rename PIM_1_percapita_RO_más_ROOC     v46_PIM_1_percap_RO_más_ROOC 
+rename PIM_2_percapita_RD_menos_CANON  v47_PIM_2_percap_RD_menos_CANON
+rename PIM_3_percapita_CANON           v48_PIM_3_percap_CANON
 *rename Ejecución_total                 v49_Ejecución_total
 *rename Ejecución_FIDT                  v50_Ejecución_FIDT
 *rename Ejecución_donaciones  		   v51_Ejecución_donaciones
@@ -105,7 +110,7 @@ global vars = "v01_Establecimientos_salud_SP v02_Con_discapacidad v03_Sin_seguro
 * Imputation 
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-foreach x in "v46_PIM_promedio_total_mean" "v46_PIM_promedio_total_all" "v47_PIM_promedio_FIDT_mean" "v47_PIM_promedio_FIDT_all" "v48_PIM_promedio_donaciones_mean" "v48_PIM_promedio_donaciones_all" {
+foreach x in "v46_PIM_1_percap_RO_más_ROOC" "v47_PIM_2_percap_RD_menos_CANON" "v48_PIM_3_percap_CANON" {
 	replace `x' = 0 if  `x' == .
 }
 
