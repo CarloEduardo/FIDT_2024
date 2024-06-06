@@ -97,9 +97,12 @@ rename Superficie_agrícola_ha          v43_Superficie_agrícola_ha
 rename Superficie_territorial_ha       v43_Superficie_territorial_ha 
 rename VBP_corriente_2023 		       v44_VBP_corriente_2023
 * DISPONIBILIDAD DE RECURSOS PRESUPUESTALES
-rename PIM_1_percapita_RO_más_ROOC     v46_PIM_1_percap_RO_más_ROOC 
-rename PIM_2_percapita_RD_menos_CANON  v47_PIM_2_percap_RD_menos_CANON
-rename PIM_3_percapita_CANON           v48_PIM_3_percap_CANON
+rename PIM_promedio_total_mean         v46_PIM_promedio_total_mean
+rename PIM_promedio_total_all          v46_PIM_promedio_total_all
+rename PIM_promedio_FIDT_mean          v47_PIM_promedio_FIDT_mean
+rename PIM_promedio_FIDT_all           v47_PIM_promedio_FIDT_all
+rename PIM_promedio_donaciones_mean    v48_PIM_promedio_donaciones_mean
+rename PIM_promedio_donaciones_all     v48_PIM_promedio_donaciones_all
 *rename Ejecución_total                 v49_Ejecución_total
 *rename Ejecución_FIDT                  v50_Ejecución_FIDT
 *rename Ejecución_donaciones  		   v51_Ejecución_donaciones
@@ -110,7 +113,7 @@ global vars = "v01_Establecimientos_salud_SP v02_Con_discapacidad v03_Sin_seguro
 * Imputation 
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-foreach x in "v46_PIM_1_percap_RO_más_ROOC" "v47_PIM_2_percap_RD_menos_CANON" "v48_PIM_3_percap_CANON" {
+foreach x in "v46_PIM_promedio_total_mean" "v46_PIM_promedio_total_all" "v47_PIM_promedio_FIDT_mean" "v47_PIM_promedio_FIDT_all" "v48_PIM_promedio_donaciones_mean" "v48_PIM_promedio_donaciones_all" {
 	replace `x' = 0 if  `x' == .
 }
 
@@ -122,7 +125,6 @@ foreach x in $vars {
 	local v01 = r(mean)
 	replace `x' = `v01' if ubigeo == "030612" & `x' == .
 }
-
 
 * Ayacucho - Huanta
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
