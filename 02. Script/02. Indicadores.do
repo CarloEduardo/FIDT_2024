@@ -370,6 +370,10 @@ restore
 preserve
 	gen ubigeo_reg = substr(ubigeo,1,2)
 
+	br if substr(ubigeo,1,2)=="15"
+	replace REGION="15 Lima Metropolitana" if substr(ubigeo,1,2)=="15" & PROVINCIA=="01 Lima"
+	replace REGION="15 Lima Provincias"    if substr(ubigeo,1,2)=="15" & PROVINCIA!="01 Lima"
+	
 	collapse (mean) $vars_mean (sum) $vars_sum , by(ubigeo_reg REGION)
 
 	egen SUMA_total = rowtotal(PIM_total_2021 PIM_total_2022 PIM_total_2023)
