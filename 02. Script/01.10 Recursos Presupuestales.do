@@ -88,7 +88,7 @@ gen ubigeo_pro = substr(ubigeo,1,4)
 br if substr(ubigeo,1,2)=="15"
 sort ubigeo_pro
 
-replace ubigeo_reg = "26" if substr(ubigeo,1,2)=="15" & substr(ubigeo,1,4)!="1501"
+replace ubigeo_reg = "26" if substr(ubigeo,1,2)=="15" & substr(ubigeo,1,4)=="1501"
 
 collapse (sum) PIM_total_2021 PIM_total_2022 PIM_total_2023, by(ubigeo_reg DEPARTAMENTO)
 	
@@ -181,7 +181,7 @@ gen ubigeo_pro = substr(ubigeo,1,4)
 br if substr(ubigeo,1,2)=="15"
 sort ubigeo_pro
 
-replace ubigeo_reg = "26" if substr(ubigeo,1,2)=="15" & substr(ubigeo,1,4)!="1501"
+replace ubigeo_reg = "26" if substr(ubigeo,1,2)=="15" & substr(ubigeo,1,4)=="1501"
 
 collapse (sum) PIM_FIDT_2021 PIM_FIDT_2022 PIM_FIDT_2023, by(ubigeo_reg DEPARTAMENTO)
 
@@ -274,7 +274,7 @@ gen ubigeo_pro = substr(ubigeo,1,4)
 br if substr(ubigeo,1,2)=="15"
 sort ubigeo_pro
 
-replace ubigeo_reg = "26" if substr(ubigeo,1,2)=="15" & substr(ubigeo,1,4)!="1501"
+replace ubigeo_reg = "26" if substr(ubigeo,1,2)=="15" & substr(ubigeo,1,4)=="1501"
 
 collapse (sum) PIM_donaciones_2021 PIM_donaciones_2022 PIM_donaciones_2023, by(ubigeo_reg)
 
@@ -347,10 +347,10 @@ use "$Ubigeo\UBIGEO 2022.dta", clear
 
 gen ubigeo_reg = substr(ubigeo,1,2)
 
-replace REGION="15 Lima Provincias"    if substr(ubigeo,1,2)=="15" & PROVINCIA=="01 Lima"
+replace REGION="15 Lima Provincias"    if substr(ubigeo,1,2)=="15" & PROVINCIA!="01 Lima"
 
-replace REGION="26 Lima Metropolitana" if substr(ubigeo,1,2)=="15" & PROVINCIA!="01 Lima"
-replace ubigeo_reg="26"                if substr(ubigeo,1,2)=="15" & PROVINCIA!="01 Lima"
+replace REGION="26 Lima Metropolitana" if substr(ubigeo,1,2)=="15" & PROVINCIA=="01 Lima"
+replace ubigeo_reg="26"                if substr(ubigeo,1,2)=="15" & PROVINCIA=="01 Lima"
 
 keep  ubigeo_reg REGION
 order ubigeo_reg REGION

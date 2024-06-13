@@ -381,10 +381,10 @@ preserve
 
 	br if substr(ubigeo,1,2)=="15"
 
-	replace REGION="15 Lima Provincias" if substr(ubigeo,1,2)=="15" & PROVINCIA=="01 Lima"
+	replace REGION="15 Lima Provincias"    if substr(ubigeo,1,2)=="15" & PROVINCIA!="01 Lima"
 	
-	replace REGION="26 Lima Metropolitana" if substr(ubigeo,1,2)=="15" & PROVINCIA!="01 Lima"
-	replace ubigeo_reg="26"                if substr(ubigeo,1,2)=="15" & PROVINCIA!="01 Lima"
+	replace REGION="26 Lima Metropolitana" if substr(ubigeo,1,2)=="15" & PROVINCIA=="01 Lima"
+	replace ubigeo_reg="26"                if substr(ubigeo,1,2)=="15" & PROVINCIA=="01 Lima"
 	
 	collapse (mean) $vars_mean (sum) $vars_sum , by(ubigeo_reg REGION)
 
