@@ -58,7 +58,7 @@ Valid   1/ Red pública de electricidad dentro del local   |      48233      72.
         Total                                             |      66192     100.00     100.00           
 -------------------------------------------------------------------------------------------------------
 */
-gen Sin_electricidad_LE = cond(electricidad_final=="1/ Red pública de electricidad dentro del local educativo y Red pública de electricidad fuera del local educativo, pero dentro de la edificación",0,1)
+gen Sin_electricidad_LE = cond(electricidad_final=="1/ Red pública de electricidad dentro del local educativo y Red pública de electricidad fuera del local educativo, pero dentro de la edificación",0,1) if electricidad_final!="4/ s.d."
 tab Sin_electricidad_LE, miss
 
 ********************************************************************************
@@ -79,7 +79,7 @@ Valid   0     |       3297       4.98       4.98       4.98
         Total |      66192     100.00     100.00           
 -----------------------------------------------------------
 */
-gen Sin_aula_acondicionada_LE = cond(aula_acondicionada=="1",0,1)
+gen Sin_aula_acondicionada_LE = cond(aula_acondicionada=="1",0,1) if aula_acondicionada!="s.d."
 tab Sin_aula_acondicionada_LE, miss
 
 ********************************************************************************
@@ -110,6 +110,8 @@ tab Sin_PC_Tablet_Laptop_LE, miss
 
 gen Años_existencia_infra_LE = AÑOS_EXISTENCIA
 
+codebook AÑOS_EXISTENCIA
+
 ********************************************************************************
 ********************************************************************************
 * v12 -> Porcentaje de locales educativos inscritos en los Registros Públicos
@@ -128,8 +130,8 @@ Valid   0     |      36542      55.21      55.21      55.21
         Total |      66192     100.00     100.00           
 -----------------------------------------------------------
 */
-gen No_Registros_Públicos_LE = cond(REGISTRO_PUBLICO=="1",0,1)
-tab No_Registros_Públicos_LE
+gen No_Registros_Públicos_LE = cond(REGISTRO_PUBLICO=="1",0,1) if REGISTRO_PUBLICO!="s.d."
+tab No_Registros_Públicos_LE, miss
 
 ********************************************************************************
 ********************************************************************************
@@ -151,8 +153,8 @@ Valid   1/ Ladrillo o concreto                             |      32832      49.
         Total                                              |      66192     100.00     100.00           
 --------------------------------------------------------------------------------------------------------
 */
-gen No_paredes_aula_LE = cond(pared=="1/ Ladrillo o concreto",0,1)
-tab No_paredes_aula_LE
+gen No_paredes_aula_LE = cond(pared=="1/ Ladrillo o concreto",0,1) if pared!="n.c." & pared!="s.d."
+tab No_paredes_aula_LE, miss
 
 ********************************************************************************
 ********************************************************************************
@@ -174,7 +176,7 @@ Valid   1/ Parquet o madera pulida, Vinilico, pisopak o |      50230      75.89 
         Total                                           |      66192     100.00     100.00           
 -----------------------------------------------------------------------------------------------------
 */
-gen No_piso_aula_LE = cond(pisos=="1/ Parquet o madera pulida, Vinilico, pisopak o similar, Loseta, cerámico o similar, Cemento, Madera entablado",0,1)
+gen No_piso_aula_LE = cond(pisos=="1/ Parquet o madera pulida, Vinilico, pisopak o similar, Loseta, cerámico o similar, Cemento, Madera entablado",0,1) if pisos!="n.c." & pisos!="s.d."
 tab No_piso_aula_LE, miss
 
 ********************************************************************************
@@ -196,7 +198,7 @@ Valid   1/ Concreto armado, Madera, Teja, Fibra de      |      51593      77.94 
         Total                                           |      66192     100.00     100.00           
 -----------------------------------------------------------------------------------------------------
 */
-gen No_techo_aula_LE = cond(techo=="1/ Concreto armado, Madera, Teja, Fibra de cemento, Calamina, Calaminón, Eternit",0,1)
+gen No_techo_aula_LE = cond(techo=="1/ Concreto armado, Madera, Teja, Fibra de cemento, Calamina, Calaminón, Eternit",0,1) if techo!="n.c." & techo!="s.d."
 tab No_techo_aula_LE, miss
 
 ********************************************************************************
@@ -220,7 +222,7 @@ Valid   1/ Red pública, Red pública dentro del local      |      33011      49
         Total                                             |      66192     100.00     100.00           
 -------------------------------------------------------------------------------------------------------
 */
-gen Sin_agua_LE = cond(agua_final=="1/ Red pública, Red pública dentro del local educativo, Red pública fuera del local educativo, pero dentro de la edificación y Pilón o pileta de uso público",0,1)
+gen Sin_agua_LE = cond(agua_final=="1/ Red pública, Red pública dentro del local educativo, Red pública fuera del local educativo, pero dentro de la edificación y Pilón o pileta de uso público",0,1) if agua_final!="4/ s.d."
 tab Sin_agua_LE, miss
 
 ********************************************************************************
@@ -247,7 +249,7 @@ Valid   1/ Red pública de desague dentro del local         |      26161      39
         Total                                              |      66192     100.00     100.00           
 --------------------------------------------------------------------------------------------------------
 */
-gen Sin_desagüe_LE = cond(desague_final=="1/ Red pública de desague dentro del local educativo y Red pública de desague fuera del local educativo, pero dentro de la edificación",0,1)
+gen Sin_desagüe_LE = cond(desague_final=="1/ Red pública de desague dentro del local educativo y Red pública de desague fuera del local educativo, pero dentro de la edificación",0,1) if desague_final!="4/ s.d."
 tab Sin_desagüe_LE, miss
 
 ********************************************************************************
