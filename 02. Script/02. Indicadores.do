@@ -110,20 +110,16 @@ rename Pobreza_monetaria               v52_Pobreza_monetaria
 
 gen observación = cond(DISTRITO!="","Sin observaciones","Revisar")
 
-replace REGION="14 Lambayeque"     if ubigeo=="140401" & REGION==""
-replace PROVINCIA="04 Lambayeque"  if ubigeo=="140401" & PROVINCIA==""
-replace DISTRITO="01 Lambayeque"   if ubigeo=="140401" & DISTRITO==""
+replace REGION   ="14 Lambayeque"   if ubigeo=="140401" & REGION==""
+replace PROVINCIA="04 Lambayeque"   if ubigeo=="140401" & PROVINCIA==""
+replace DISTRITO ="01 Lambayeque"   if ubigeo=="140401" & DISTRITO==""
 
-replace REGION="20 Piura"          if ubigeo=="200508" & REGION==""
-replace PROVINCIA="05 Paita"       if ubigeo=="200508" & PROVINCIA==""
-replace DISTRITO="08 Pueblo Nuevo" if ubigeo=="200508" & DISTRITO==""
+replace REGION   ="20 Piura"        if ubigeo=="200508" & REGION==""
+replace PROVINCIA="05 Paita"        if ubigeo=="200508" & PROVINCIA==""
+replace DISTRITO ="08 Pueblo Nuevo" if ubigeo=="200508" & DISTRITO==""
 
-br if substr(ubigeo,1,6)=="140401" | substr(ubigeo,1,6)=="200508"
-
-br   if substr(ubigeo,1,6)=="140401" | substr(ubigeo,1,6)=="200508"
-drop if substr(ubigeo,1,6)=="140401"  | substr(ubigeo,1,6)=="200508"
-
-global vars = "v01_Establecimientos_salud_SP v02_Con_discapacidad v03_Sin_seguro v04_Desnutricion_cromica v05_Anemia_total v06_No_leer_escribir v07_Asiste_IE_otro_distrito v08_Nivel_secundaria_más_17 v09_Años_escolaridad v10_No_estudian_6_17 v11_Sin_electricidad_LE v12_Sin_aula_acondicionada_LE v13_Sin_PC_Tablet_Laptop v14_Años_existencia_infra_LE v15_No_Registros_Públicos_LE v16_No_paredes_aula_LE v17_No_piso_aula_LE v18_No_techo_aula_LE v19_Sin_agua_LE v20_Sin_desagüe_LE v23_Cerco_perimétrico_total v23_Cerco_perimétrico_parcial v23_Cerco_perimétrico_no_tiene v24_Cantidad_LE v25_cond_inadecuadas_inicial v26_cond_inadecuadas_primaria v27_cond_inadecuadas_secundaria v28_Red_vial_regional_inade v29_Red_vial_regional_imple v30_Red_vial_nacional_inade v31_Red_vial_nacional_imple v32_Red_vial_vecinal_inade v33_Red_vial_vecinal_imple v34_Sin_agua v35_Sin_desagüe v36_Sin_electricidad_rural v37_P_Población_rural v38_Sin_teléfono_celular_rural v39_Sin_teléfono_fijo_rural v40_Sin_conexión_internet_rural v41_Cobertura_inter_movil_rural v42_PEA_Agri_gana_silvi_pesca v43_Superficie_agrícola_ha v43_Superficie_territorial_ha v44_VBP_corriente_2023 v45_Número_productores v52_Pobreza_monetaria"
+br   if substr(ubigeo,1,6)=="140401" | substr(ubigeo,1,6)=="200508" | substr(ubigeo,1,6)=="160109"
+drop if substr(ubigeo,1,6)=="140401" | substr(ubigeo,1,6)=="200508" | substr(ubigeo,1,6)=="160109"
 
 ********************************************************************************
 ********************************************************************************
@@ -132,9 +128,15 @@ global vars = "v01_Establecimientos_salud_SP v02_Con_discapacidad v03_Sin_seguro
 * Imputation 
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
+foreach x in "PIM_total_2021" "PIM_total_2022" "PIM_total_2023" "PIM_FIDT_2021" "PIM_FIDT_2022" "PIM_FIDT_2023" "PIM_donaciones_2021" "PIM_donaciones_2022" "PIM_donaciones_2023" {
+	replace `x' = 0 if  `x' == .
+}
+
 foreach x in "v46_PIM_promedio_total_mean" "v46_PIM_promedio_total_all" "v47_PIM_promedio_FIDT_mean" "v47_PIM_promedio_FIDT_all" "v48_PIM_promedio_donaciones_mean" "v48_PIM_promedio_donaciones_all" {
 	replace `x' = 0 if  `x' == .
 }
+
+global vars = "v02_Con_discapacidad v03_Sin_seguro v04_Desnutricion_cromica v05_Anemia_total v06_No_leer_escribir v07_Asiste_IE_otro_distrito v08_Nivel_secundaria_más_17 v09_Años_escolaridad v10_No_estudian_6_17 v11_Sin_electricidad_LE v12_Sin_aula_acondicionada_LE v13_Sin_PC_Tablet_Laptop v14_Años_existencia_infra_LE v15_No_Registros_Públicos_LE v16_No_paredes_aula_LE v17_No_piso_aula_LE v18_No_techo_aula_LE v19_Sin_agua_LE v20_Sin_desagüe_LE v23_Cerco_perimétrico_total v23_Cerco_perimétrico_parcial v23_Cerco_perimétrico_no_tiene v25_cond_inadecuadas_inicial v26_cond_inadecuadas_primaria v27_cond_inadecuadas_secundaria v28_Red_vial_regional_inade v29_Red_vial_regional_imple v30_Red_vial_nacional_inade v31_Red_vial_nacional_imple v32_Red_vial_vecinal_inade v33_Red_vial_vecinal_imple v34_Sin_agua v35_Sin_desagüe v36_Sin_electricidad_rural v37_P_Población_rural v38_Sin_teléfono_celular_rural v39_Sin_teléfono_fijo_rural v40_Sin_conexión_internet_rural v41_Cobertura_inter_movil_rural v52_Pobreza_monetaria"
 
 * Apurímac - Chincheros
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -239,6 +241,7 @@ foreach x in $vars {
 	local v14 = r(mean)
 	replace `x' = `v14' if ubigeo == "180107" & `x' == .
 }
+
 br if ubigeo == "180101" | ubigeo == "180107"
 
 * San Martín - Tocache
@@ -248,6 +251,7 @@ foreach x in $vars {
 	local v15 = r(mean)
 	replace `x' = `v15' if ubigeo == "221006" & `x' == .
 }
+
 br if ubigeo == "221005" | ubigeo == "221006"
 
 * Ucayali - Padre Abad
@@ -261,7 +265,6 @@ foreach x in $vars {
 }
 
 br if ubigeo == "250301" | ubigeo == "250303" | ubigeo == "250304" | ubigeo == "250305" | ubigeo == "250306" | ubigeo == "250307"
-
 
 * Imputación a valores rurales
 global vars_rural = "v36_Sin_electricidad_rural v37_P_Población_rural v38_Sin_teléfono_celular_rural v39_Sin_teléfono_fijo_rural v40_Sin_conexión_internet_rural"
@@ -288,6 +291,13 @@ foreach x in $vars_vial {
 	local v01 = r(mean)
 	replace `x' = `v01' if substr(ubigeo,1,2)=="07" & `x' == .
 }
+	
+* Imputation 
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+	
+foreach x in "v01_Establecimientos_salud_SP" "v24_Cantidad_LE" "v42_PEA_Agri_gana_silvi_pesca" "v43_Superficie_agrícola_ha" "v43_Superficie_territorial_ha" "v44_VBP_corriente_2023" "v45_Número_productores" {
+	replace `x' = 0 if  `x' == .
+}	
 	
 * Imputation at the provincial level
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -340,9 +350,9 @@ sort ubigeo
 
 save "$Output\Data_Warehouse_distrito.dta", replace
 
-global vars_mean = "v02_Con_discapacidad v03_Sin_seguro v04_Desnutricion_cromica v05_Anemia_total v06_No_leer_escribir v07_Asiste_IE_otro_distrito v08_Nivel_secundaria_más_17 v09_Años_escolaridad v09_Años_escolaridadm v10_No_estudian_6_17 v11_Sin_electricidad_LE v12_Sin_aula_acondicionada_LE v13_Sin_PC_Tablet_Laptop v14_Años_existencia_infra_LE v15_No_Registros_Públicos_LE v16_No_paredes_aula_LE v17_No_piso_aula_LE v18_No_techo_aula_LE v19_Sin_agua_LE v20_Sin_desagüe_LE v23_Cerco_perimétrico_total v23_Cerco_perimétrico_parcial v23_Cerco_perimétrico_no_tiene v25_cond_inadecuadas_inicial v26_cond_inadecuadas_primaria v27_cond_inadecuadas_secundaria v28_Red_vial_regional_inade v29_Red_vial_regional_imple v30_Red_vial_nacional_inade v31_Red_vial_nacional_imple v32_Red_vial_vecinal_inade v33_Red_vial_vecinal_imple v34_Sin_agua v35_Sin_desagüe v36_Sin_electricidad_rural v38_Sin_teléfono_celular_rural v39_Sin_teléfono_fijo_rural v40_Sin_conexión_internet_rural v42_PEA_Agri_gana_silvi_pesca v52_Pobreza_monetaria"
+global vars_mean = "v02_Con_discapacidad v03_Sin_seguro v04_Desnutricion_cromica v05_Anemia_total v06_No_leer_escribir v07_Asiste_IE_otro_distrito v08_Nivel_secundaria_más_17 v09_Años_escolaridad v09_Años_escolaridadm v10_No_estudian_6_17 v11_Sin_electricidad_LE v12_Sin_aula_acondicionada_LE v13_Sin_PC_Tablet_Laptop v14_Años_existencia_infra_LE v15_No_Registros_Públicos_LE v16_No_paredes_aula_LE v17_No_piso_aula_LE v18_No_techo_aula_LE v19_Sin_agua_LE v20_Sin_desagüe_LE v23_Cerco_perimétrico_total v23_Cerco_perimétrico_parcial v23_Cerco_perimétrico_no_tiene v25_cond_inadecuadas_inicial v26_cond_inadecuadas_primaria v27_cond_inadecuadas_secundaria v28_Red_vial_regional_inade v29_Red_vial_regional_imple v30_Red_vial_nacional_inade v31_Red_vial_nacional_imple v32_Red_vial_vecinal_inade v33_Red_vial_vecinal_imple v34_Sin_agua v35_Sin_desagüe v36_Sin_electricidad_rural v38_Sin_teléfono_celular_rural v39_Sin_teléfono_fijo_rural v40_Sin_conexión_internet_rural v41_Cobertura_inter_movil_rural v52_Pobreza_monetaria"
 
-global vars_sum = "v01_Establecimientos_salud_SP v24_Cantidad_LE v37_P_Población_rural v41_Cobertura_inter_movil_rural v43_Superficie_agrícola_ha v43_Superficie_territorial_ha v44_VBP_corriente_2023 v45_Número_productores"
+global vars_sum = "v01_Establecimientos_salud_SP v24_Cantidad_LE v37_P_Población_rural v42_PEA_Agri_gana_silvi_pesca v43_Superficie_agrícola_ha v43_Superficie_territorial_ha v44_VBP_corriente_2023 v45_Número_productores"
 
 preserve
 	gen ubigeo_pro = substr(ubigeo,1,4)
