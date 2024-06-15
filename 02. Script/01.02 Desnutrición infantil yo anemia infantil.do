@@ -1,29 +1,24 @@
-* Tema: Desnutrición infantil yo anemia infantil
-* Elaboracion: Carlos Torres
- 
-* Situación nutricional de niños menores de 05 años
-* https://www.minsa.gob.pe/reunis/data/sien-hisminsa-5.asp
-* https://www.gob.pe/institucion/ins/informes-publicaciones/4201302-indicadores-ninos-enero-diciembre-2022-base-de-datos-his-minsa
-
-* Situación nutricional de las gestantes
-* https://www.minsa.gob.pe/reunis/data/sien-hisminsa-estado-nuticional-gestantes.asp
-* https://www.gob.pe/institucion/ins/informes-publicaciones/4201301-indicadores-gestantes-enero-diciembre-2022-base-de-datos-sien
-********************************************************************************
-
 clear all
 set more off
+
+********************************************************************************
+* Tema: Desnutrición infantil yo anemia infantil
+* Elaboracion: Carlos Torres
+********************************************************************************
 
 * Work route
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-global Path    = "E:\01. DataBase\FIDT"
-global Ubigeo  = "$Path\00. Ubigeo"
-global INS     = "$Path\03. INS"
-global Output  = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\02. Desnutrición infantil yo anemia infantil"
+global Path    = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024"
+global Ubigeo  = "$Path\01. Input\00. Dataset\00. Ubigeo"
+global INS     = "$Path\01. Input\00. Dataset\03. INS"
+global Output  = "$Path\01. Input\02. Desnutrición infantil yo anemia infantil"
 
 ********************************************************************************
 ********************************************************************************
 * Porcentaje de desnutrición crónica en niños menores de 5 años
+* https://www.minsa.gob.pe/reunis/data/sien-hisminsa-5.asp
+* https://www.gob.pe/institucion/ins/informes-publicaciones/4201302-indicadores-ninos-enero-diciembre-2022-base-de-datos-his-minsa
 ********************************************************************************
 ********************************************************************************
 
@@ -51,6 +46,8 @@ save "$Output\Desnutrición.dta", replace
 ********************************************************************************
 ********************************************************************************
 * Porcentaje de anemia total en niños entre 6 y 35 meses
+* https://www.minsa.gob.pe/reunis/data/sien-hisminsa-estado-nuticional-gestantes.asp
+* https://www.gob.pe/institucion/ins/informes-publicaciones/4201301-indicadores-gestantes-enero-diciembre-2022-base-de-datos-sien
 ********************************************************************************
 ********************************************************************************
 
@@ -75,6 +72,12 @@ gen Anemia_total=Población_anemia_total/Población_evaluados
 
 save "$Output\Anemia.dta", replace
 
+********************************************************************************
+********************************************************************************
+********************************************************************************
+********************************************************************************
+
+* Merging datasets
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 use "$Ubigeo\UBIGEO 2022.dta", clear

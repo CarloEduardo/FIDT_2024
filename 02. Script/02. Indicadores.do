@@ -1,15 +1,16 @@
+clear all
+set more off
+
+********************************************************************************
 * Tema: Indicadores FIDT
 * Elaboracion: Carlos Torres: 
 ********************************************************************************
 
-clear all
-set more off
-
 * Work route
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-global Path                    = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024"
-global Ubigeo                  = "E:\01. DataBase\FIDT\00. Ubigeo"
+global Path    				   = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024"
+global Ubigeo  				   = "$Path\01. Input\00. Dataset\00. Ubigeo"
 global Input                   = "$Path\01. Input"
 global Salud                   = "$Input\01. Salud Básica"
 global Desnutrición            = "$Input\02. Desnutrición infantil yo anemia infantil"

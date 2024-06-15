@@ -1,16 +1,17 @@
+clear all
+set more off
+
+********************************************************************************
 * Tema: Recursos Presupuestales
 * Elaboracion: Carlos Torres
 ********************************************************************************
 
-clear all
-set more off
-
 * Work route
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-global Path    = "E:\01. DataBase\FIDT"
-global Pobreza = "$Path\10. Pobreza"
-global Output  = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\11. Pobreza"
+global Path    = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024"
+global Pobreza = "$Path\01. Input\00. Dataset\10. Pobreza"
+global Output  = "$Path\01. Input\11. Pobreza"
 
 ********************************************************************************
 ********************************************************************************

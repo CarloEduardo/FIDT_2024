@@ -1,17 +1,20 @@
+clear all
+set more off
+
+********************************************************************************
 * Tema: Apoyo al desarrollo productivo
 * Elaboracion: Carlos Torres
 ********************************************************************************
 
-clear all
-set more off
-
 * Work route
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-global Path       = "E:\01. DataBase\FIDT"
-global Ubigeo     = "$Path\00. Ubigeo"
-global Censo_2017 = "$Path\01. Censo 2017"
-global MIDAGRI    = "$Path\08. MIDAGRI"
-global Output     = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\09. Apoyo al desarrollo productivo"
+
+global Path       = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024"
+global Ubigeo     = "$Path\01. Input\00. Dataset\00. Ubigeo"
+*global Censo_2017 = "$Path\01. Input\00. Dataset\01. Censo 2017"
+global Censo_2017 = "E:\01. DataBase\FIDT\01. Censo 2017" // Debido al peso, los archivos del Censo no se subieron a GitHub
+global MIDAGRI    = "$Path\01. Input\00. Dataset\08. MIDAGRI"
+global Output     = "$Path\01. Input\09. Apoyo al desarrollo productivo"
 
 ********************************************************************************
 ********************************************************************************
@@ -121,6 +124,11 @@ save "$Output\Número de productores.dta", replace
 
 ********************************************************************************
 ********************************************************************************
+********************************************************************************
+********************************************************************************
+
+* Merging datasets
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 use "$Ubigeo\UBIGEO 2022.dta", clear
 merge 1:1 ubigeo using "$Output\PEA ocupada agrícola.dta", nogen

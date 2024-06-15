@@ -7,10 +7,11 @@ set more off
 
 * Work route
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-global Path   = "E:\01. DataBase\FIDT"
-global Ubigeo = "$Path\00. Ubigeo"
-global MEF    = "$Path\09. MEF"
-global Output = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\10. Recursos Presupuestales"
+
+global Path   = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024"
+global Ubigeo = "$Path\01. Input\00. Dataset\00. Ubigeo"
+global MEF    = "$Path\01. Input\00. Dataset\09. MEF"
+global Output = "$Path\01. Input\10. Recursos Presupuestales"
 
 ********************************************************************************
 ********************************************************************************
@@ -363,6 +364,11 @@ save "$Output\10. Recursos Presupuestales provincia.dta", replace
 
 ********************************************************************************
 ********************************************************************************
+********************************************************************************
+********************************************************************************
+
+* Merging datasets
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 use "$Ubigeo\UBIGEO 2022.dta", clear
 

@@ -1,17 +1,19 @@
+clear all
+set more off
+
+********************************************************************************
 * Tema: Servicios de educación básica (Parte 1)
 * Elaboracion: Carlos Torres
 ********************************************************************************
 
-clear all
-set more off
-
 * Work route
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-global Path       = "E:\01. DataBase\FIDT"
-global Ubigeo     = "$Path\00. Ubigeo"
-global Censo_2017 = "$Path\01. Censo 2017"
-global Output     = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\03. Servicios de educación básica"
+global Path       = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024"
+global Ubigeo     = "$Path\01. Input\00. Dataset\00. Ubigeo"
+*global Censo_2017 = "$Path\01. Input\00. Dataset\01. Censo 2017"
+global Censo_2017 = "E:\01. DataBase\FIDT\01. Censo 2017" // Debido al peso, los archivos del Censo no se subieron 
+global Output     = "$Path\01. Input\03. Servicios de educación básica"
 
 ********************************************************************************
 ********************************************************************************
@@ -45,13 +47,12 @@ save "$Output\Analfabeta.dta", replace
 
 ********************************************************************************
 ********************************************************************************
-* Variable 07
 * Porcentaje población que asiste una IE en otro distrito
-* Variable 08
+
 * Porcentaje personas de 15 a más años con nivel alcanzado mínimo de secundario
-* Variable 09
+
 * Años promedios de escolaridad de 3 a 17 años
-* Variable 10
+
 * Porcentaje de Hogar con niños que no estudian (de 6 a 12 años)
 ********************************************************************************
 ********************************************************************************
@@ -180,7 +181,11 @@ restore
 
 ********************************************************************************
 ********************************************************************************
+********************************************************************************
+********************************************************************************
 
+* Merging datasets
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 use "$Ubigeo\UBIGEO 2022.dta", clear
 merge 1:1 ubigeo using "$Output\Analfabeta.dta", nogen

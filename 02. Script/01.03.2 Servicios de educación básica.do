@@ -1,21 +1,21 @@
+clear all
+set more off
+
+********************************************************************************
 * Tema: Servicios de educación básica (Parte 2)
 * Elaboracion: Carlos Torres
 ********************************************************************************
 
-clear all
-set more off
-
 * Work route
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-global Path   = "E:\01. DataBase\FIDT"
-global Minedu = "$Path\04. Minedu"
-global Output = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\03. Servicios de educación básica"
+global Path   = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024"
+global Minedu = "$Path\01. Input\00. Dataset\04. Minedu"
+global Output = "$Path\01. Input\03. Servicios de educación básica"
 
 ********************************************************************************
 ********************************************************************************
 * Porcentaje Población que no tiene seguro de salud 
-*
 * Información extraida del OFICIO N° 000319-2024-INEI/JEF
 ********************************************************************************
 ********************************************************************************
@@ -39,7 +39,7 @@ drop if ini_pri_sec==0
 
 ********************************************************************************
 ********************************************************************************
-* v12 -> Porcentaje de locales educativos con acceso al servicio de energía eléctrica en el local educativo por Red pública de electricidad dentro del local educativo y Red pública de electricidad fuera del local educativo, pero dentro de la edificación
+* Porcentaje de locales educativos con acceso al servicio de energía eléctrica en el local educativo por Red pública de electricidad dentro del local educativo y Red pública de electricidad fuera del local educativo, pero dentro de la edificación
 ********************************************************************************
 ********************************************************************************
 
@@ -63,7 +63,7 @@ tab Sin_electricidad_LE, miss
 
 ********************************************************************************
 ********************************************************************************
-* v12 -> Porcentaje de locales educativos que cuentan con al menos un aula acondicionada en estado de conservación de tipo bueno o regular.
+* Porcentaje de locales educativos que cuentan con al menos un aula acondicionada en estado de conservación de tipo bueno o regular.
 ********************************************************************************
 ********************************************************************************
 
@@ -84,7 +84,7 @@ tab Sin_aula_acondicionada_LE, miss
 
 ********************************************************************************
 ********************************************************************************
-* v12 -> Porcentaje de locales educativos que cuentan con al menos una PC, Tablet y/o Laptop convencional.
+* Porcentaje de locales educativos que cuentan con al menos una PC, Tablet y/o Laptop convencional.
 ********************************************************************************
 ********************************************************************************
 
@@ -104,7 +104,7 @@ tab Sin_PC_Tablet_Laptop_LE, miss
 
 ********************************************************************************
 ********************************************************************************
-* v12 -> Años de existencia de la infraestructura
+* Años de existencia de la infraestructura
 ********************************************************************************
 ********************************************************************************
 
@@ -114,7 +114,7 @@ codebook AÑOS_EXISTENCIA
 
 ********************************************************************************
 ********************************************************************************
-* v12 -> Porcentaje de locales educativos inscritos en los Registros Públicos
+* Porcentaje de locales educativos inscritos en los Registros Públicos
 ********************************************************************************
 ********************************************************************************
 
@@ -135,7 +135,7 @@ tab No_Registros_Públicos_LE, miss
 
 ********************************************************************************
 ********************************************************************************
-* v12 -> Porcentaje de locales educativos con el material predominante en las paredes del local educativo de Ladrillo o bloque de cemento y Piedra o sillar con cal o cemento
+* Porcentaje de locales educativos con el material predominante en las paredes del local educativo de Ladrillo o bloque de cemento y Piedra o sillar con cal o cemento
 ********************************************************************************
 ********************************************************************************
 fre pared	
@@ -158,7 +158,7 @@ tab No_paredes_aula_LE, miss
 
 ********************************************************************************
 ********************************************************************************
-* v12 -> Porcentaje de locales educativos con el material predominante en el piso del local educativo de Parquet o madera pulida, Láminas asfálticas, vinílicos o similares, Losetas, terrazos, cerámicos o similares, Madera (pona, tornillo, etc.) y Cemento
+* Porcentaje de locales educativos con el material predominante en el piso del local educativo de Parquet o madera pulida, Láminas asfálticas, vinílicos o similares, Losetas, terrazos, cerámicos o similares, Madera (pona, tornillo, etc.) y Cemento
 ********************************************************************************
 ********************************************************************************
 fre pisos
@@ -181,7 +181,7 @@ tab No_piso_aula_LE, miss
 
 ********************************************************************************
 ********************************************************************************
-* v12 -> Porcentaje de locales educativos con el material predominante en el techo del local educativo de Concreto armado, Madera, Tejas y Planchas de calamina, fibra de cemento o similares
+* Porcentaje de locales educativos con el material predominante en el techo del local educativo de Concreto armado, Madera, Tejas y Planchas de calamina, fibra de cemento o similares
 ********************************************************************************
 ********************************************************************************
 fre techo
@@ -203,7 +203,7 @@ tab No_techo_aula_LE, miss
 
 ********************************************************************************
 ********************************************************************************
-* v12 -> Porcentaje de locales educativos con abastecimiento de agua del local educativo por Red pública, Red pública dentro de la vivienda, Red pública fuera de la vivienda, pero dentro de la edificación y Pilón o pileta de uso público
+* Porcentaje de locales educativos con abastecimiento de agua del local educativo por Red pública, Red pública dentro de la vivienda, Red pública fuera de la vivienda, pero dentro de la edificación y Pilón o pileta de uso público
 ********************************************************************************
 ********************************************************************************
 fre agua_final
@@ -227,7 +227,7 @@ tab Sin_agua_LE, miss
 
 ********************************************************************************
 ********************************************************************************
-* v12 -> Porcentaje de locales educativos con eliminación de excretas del local educativo a través de Red pública de desagüe dentro del local educativo y Red pública de desagüe fuera del local educativo, pero dentro de la edificación
+* Porcentaje de locales educativos con eliminación de excretas del local educativo a través de Red pública de desagüe dentro del local educativo y Red pública de desagüe fuera del local educativo, pero dentro de la edificación
 ********************************************************************************
 ********************************************************************************
 
@@ -254,7 +254,7 @@ tab Sin_desagüe_LE, miss
 
 ********************************************************************************
 ********************************************************************************
-* v12 -> Porcentaje de locales educativos que no cuentan con cerco perimétrico 
+* Porcentaje de locales educativos que no cuentan con cerco perimétrico 
 ********************************************************************************
 ********************************************************************************
 
@@ -283,16 +283,18 @@ tab Cerco_perimétrico_no_tienes, miss
 
 ********************************************************************************
 ********************************************************************************
-* v12 -> Cantidad de locales educativos
+* Cantidad de locales educativos
 ********************************************************************************
 ********************************************************************************
 gen Cantidad_LE = 1
 
 ********************************************************************************
 ********************************************************************************
-* v12 -> Porcentaje de instituciones educativas a nivel _ en condiciones inadecuadas
-* v12 -> Porcentaje de instituciones educativas a nivel primario en condiciones inadecuadas
-* v12 -> Porcentaje de instituciones educativas a nivel secundario en condiciones inadecuadas
+* Porcentaje de instituciones educativas a nivel _ en condiciones inadecuadas
+
+* Porcentaje de instituciones educativas a nivel primario en condiciones inadecuadas
+
+* Porcentaje de instituciones educativas a nivel secundario en condiciones inadecuadas
 ********************************************************************************
 ********************************************************************************
 fre condiciones_inadecuadas

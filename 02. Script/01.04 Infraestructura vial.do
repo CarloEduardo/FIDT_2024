@@ -7,10 +7,11 @@ set more off
 
 * Work route
 ********************************************************************************
-global Path      = "E:\01. DataBase\FIDT"
-global Ubigeo    = "$Path\00. Ubigeo"
-global InvertePe = "$Path\05. INVIERTE.PE"
-global Output    = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\04. Infraestructura vial"
+
+global Path      = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024"
+global Ubigeo    = "$Path\01. Input\00. Dataset\00. Ubigeo"
+global InvertePe = "$Path\01. Input\00. Dataset\05. INVIERTE.PE"
+global Output    = "$Path\01. Input\04. Infraestructura vial"
 
 ********************************************************************************
 ********************************************************************************
@@ -199,6 +200,10 @@ save "$Output\Red vial vecinal por implementar.dta", replace
 ********************************************************************************
 ********************************************************************************
 ********************************************************************************
+********************************************************************************
+
+* Merging datasets
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 use "$Ubigeo\UBIGEO 2022.dta", clear
 

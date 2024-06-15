@@ -1,23 +1,24 @@
+clear all
+set more off
+
+********************************************************************************
 * Tema: RENIPRESS y Salud Básica
 * Elaboracion: Carlos Torres
 ********************************************************************************
 
-clear all
-set more off
-
 * Work route
 *'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-global Path       = "E:\01. DataBase\FIDT"
-global Ubigeo     = "$Path\00. Ubigeo"
-global Censo_2017 = "$Path\01. Censo 2017"
-global Susalud 	  = "$Path\02. SUSALUD"
-global Output     = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024\01. Input\01. Salud Básica"
+global Path       = "E:\03. Job\05. CONSULTORIAS\13. MEF\FIDT_2024"
+global Ubigeo     = "$Path\01. Input\00. Dataset\00. Ubigeo"
+*global Censo_2017 = "$Path\01. Input\00. Dataset\01. Censo 2017"
+global Censo_2017 = "E:\01. DataBase\FIDT\01. Censo 2017" // Debido al peso, los archivos del Censo no se subieron a GitHub
+global Susalud 	  = "$Path\01. Input\00. Dataset\02. SUSALUD"
+global Output     = "$Path\01. Input\01. Salud Básica"
 
 ********************************************************************************
 ********************************************************************************
 * Cantidad de establecimientos de salud del Sector Público
-*
 * Información extraida de la web de SUSALUD
 * http://app20.susalud.gob.pe:8080/registro-renipress-webapp/listadoEstablecimientosRegistrados.htm?action=mostrarBuscar#no-back-button
 ********************************************************************************
@@ -94,7 +95,6 @@ save "$Output\RENIPRESS.dta", replace
 ********************************************************************************
 ********************************************************************************
 * Porcentaje de población con alguna dificultad permanente
-*
 * Información extraida de la web de INEI
 * https://censos2017.inei.gob.pe/redatam/
 ********************************************************************************
@@ -145,7 +145,6 @@ save "$Output\Con discapacidad.dta", replace
 ********************************************************************************
 ********************************************************************************
 * Porcentaje Población que no tiene seguro de salud 
-*
 * Información extraida del OFICIO N° 000319-2024-INEI/JEF
 ********************************************************************************
 ********************************************************************************
@@ -179,6 +178,10 @@ save "$Output\Sin seguro.dta", replace
 ********************************************************************************
 ********************************************************************************
 ********************************************************************************
+********************************************************************************
+
+* Merging datasets
+*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 use "$Ubigeo\UBIGEO 2022.dta", clear
 
