@@ -66,7 +66,7 @@ desnutricion_data$Población_Desnutricion_normal  <- as.numeric(desnutricion_dat
 
 desnutricion_data$Desnutricion_cromica <- desnutricion_data$Población_Desnutricion_cronica/desnutricion_data$Total
 
-#write_dta(desnutricion_data, file.path(Output, "Desnutrición.dta"))
+#write_dta(desnutricion_data, file.path(Output, "Desnutrición .dta"))
 
 ################################################################################
 ################################################################################
@@ -122,7 +122,7 @@ anemia_data$Anemia_Total <- anemia_data$Anemia_Leve +
 
 anemia_data$Anemia_total <- anemia_data$Anemia_Total/anemia_data$Total
 
-#write_dta(anemia_data, file.path(Output, "Anemia.dta"))
+#write_dta(anemia_data, file.path(Output, "Anemia .dta"))
 
 ################################################################################
 ################################################################################
