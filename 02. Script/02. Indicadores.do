@@ -3,7 +3,7 @@ set more off
 
 ********************************************************************************
 * Tema: Indicadores FIDT
-* Elaboracion: Carlos Torres: 
+* Elaboracion: Carlos Torres
 ********************************************************************************
 
 * Work route
